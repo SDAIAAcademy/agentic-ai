@@ -7,3 +7,6 @@ labs/.env
 labs/artifacts/
 labs/cache/
 *.sqlite-journal
+labs/data/madar.sqlite
+labs/data/inbox.jsonl
+.pytest_cache/

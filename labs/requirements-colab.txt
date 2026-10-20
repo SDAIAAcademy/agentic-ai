@@ -1,0 +1,14 @@
+# Colab already ships numpy, pandas, matplotlib, pydantic, httpx, pytest, fastapi and uvicorn.
+openai>=3.30
+anthropic>=1.0
+openai-agents>=0.24
+python-dotenv>=1.1
+huggingface-hub>=2.0
+model2vec>=0.10
+bm25s>=0.3
+mcp>=2.3
+langgraph>=1.2
+langgraph-checkpoint-sqlite>=3.1
+a2a-sdk[http-server]>=1.2
+opentelemetry-sdk>=1.45
+uv  # runs the PEP 723 scripts (MCP server, loop runner)
