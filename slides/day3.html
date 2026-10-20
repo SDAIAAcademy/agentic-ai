@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 3 · Agentic AI Systems Engineering</title>
+<link rel="icon" href="../assets/img/academy.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="../assets/deck.css">
+</head>
+<body>
+<div class="deck" data-day="Day 3" data-course="Agentic AI Systems Engineering">
+
+<!-- ======================= OPENING ======================= -->
+<section class="slide title" data-label="Welcome">
+  <div class="kicker">SDAIA Academy · Agentic AI Systems Engineering · <span class="ar">هندسة أنظمة الذكاء الاصطناعي التوكيلي</span></div>
+  <h1>Harness &amp; Loop Engineering</h1>
+  <p class="lead mt">Day 3: everything around the model, and how we know it works</p>
+  <div class="meta">
+    <span class="track">AI Engineering Track</span>
+    <span>4 sessions · 4 labs</span>
+    <span>Pi · OpenClaw · Hermes · Mercury · SDKs · Ralph · evals</span>
+  </div>
+  <aside class="notes">Check who installed Node.js 22.19+ and Pi last night; they run Lab 3.1 live, everyone else uses the sample stream. Remind the room about the free quota: Labs 3.3 and 3.4 are the most request-hungry of the week; AGENT_QUICK=1 keeps them inside 50 requests.</aside>
+</section>
+
+<section class="slide" data-label="The ladder">
+  <div class="kicker">Where we are</div>
+  <h2>Day 3 climbs two rungs</h2>
+  <div class="ladder">
+    <div class="rung c-teal off"><b>Prompt</b>System prompt, tools, schemas<small>Day 1</small></div>
+    <div class="rung c-cyan off"><b>Context</b>Budgets, retrieval, memory, skills, MCP<small>Day 2</small></div>
+    <div class="rung c-coral on"><b>Harness</b>The loop's controls: tools, permissions, hooks, sandbox, sessions, context files<small>Day 3 · S1–S2</small></div>
+    <div class="rung c-amber on"><b>Loop</b>An outer loop that runs the agent until checks pass, with budgets<small>Day 3 · S3</small></div>
+    <div class="rung c-purple off"><b>Graph</b>States, checkpoints, approvals<small>Day 4</small></div>
+  </div>
+  <div class="callout tip mt"><b>And one cross-cutting skill: evals (S4).</b> Every change to a prompt, a context strategy, a harness or a loop is a hypothesis. From today we test it.</div>
+</section>
+
+<section class="slide" data-label="Today">
+  <div class="kicker">Today</div>
+  <h2>Day 3 schedule</h2>
+  <div class="agenda">
+    <div class="item"><span><b>Session 1 · Anatomy of a harness</b><small>Agent = model + harness; guides and sensors; Pi, OpenClaw, Hermes, Mercury taken apart; 2026 incidents</small></span></div>
+    <div class="item brk"><span>Break</span></div>
+    <div class="item"><span><b>Session 2 · Agent SDKs and hosted agents</b><small>OpenAI Agents SDK, Claude Agent SDK, OpenAI Agents API, Claude Managed Agents: build vs. buy</small></span></div>
+    <div class="item brk"><span>Long break</span></div>
+    <div class="item"><span><b>Session 3 · Loop engineering</b><small>Long-running agents, the Ralph loop, fresh context, progress files, back-pressure, budgets</small></span></div>
+    <div class="item brk"><span>Break</span></div>
+    <div class="item"><span><b>Session 4 · Evaluating agents</b><small>Tasks, graders, judges, pass@k and pass^k, error analysis, traces</small></span></div>
+  </div>
+</section>
+
+<!-- ======================= SESSION 1 ======================= -->
+<section class="slide section" data-session="Session 1 · Anatomy of a harness">
+  <div class="kicker">Session 1</div>
+  <h1>Anatomy of a harness</h1>
+  <ul class="bullets outcomes tight">
+    <li>Name the parts of a harness, and tell guides from sensors</li>
+    <li>Read Pi's prompt, loop and event stream</li>
+    <li>Compare Pi, OpenClaw, Hermes Agent and Mercury Agent on the same dimensions</li>
+    <li>Add permissions, hooks and an audit log to your own loop</li>
+  </ul>
+  <div class="sess-no">01</div>
+</section>
+
+<section class="slide" data-label="Model + harness">
+  <div class="kicker">The 2026 consensus</div>
+  <h2>Agent = model + harness</h2>
+  <div class="cols cols-2">
+    <div>
+      <ul class="bullets">
+        <li>Anthropic, <i>Effective harnesses for long-running agents</i> (Nov 2025); OpenAI, <i>Harness engineering</i> (Feb 2026); Birgitta Böckeler on martinfowler.com (Apr 2026): agent quality lives as much in the harness as in the model.</li>
+        <li>LangChain raised its Terminal-Bench 2.0 score from <b>52.8</b> to <b>66.5</b> by changing only the harness, same model.</li>
+        <li>So the question "which model?" comes with a second one: "in which harness?"</li>
+      </ul>
+    </div>
+    <div class="figure">
+      <svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans" font-size="15">
+        <rect x="10" y="10" width="500" height="280" rx="18" fill="#fff4ef" stroke="#e8674f" stroke-width="2"/>
+        <text x="260" y="38" text-anchor="middle" font-weight="700" fill="#e8674f" font-size="18">harness</text>
+        <rect x="185" y="105" width="150" height="90" rx="14" fill="#1d3557"/>
+        <text x="260" y="157" text-anchor="middle" fill="#fff" font-weight="700" font-size="20">model</text>
+        <text x="95" y="80" text-anchor="middle">system prompt</text>
+        <text x="425" y="80" text-anchor="middle">tools</text>
+        <text x="95" y="155" text-anchor="middle">context files</text>
+        <text x="425" y="155" text-anchor="middle">permissions</text>
+        <text x="95" y="230" text-anchor="middle">sessions · compaction</text>
+        <text x="425" y="230" text-anchor="middle">hooks · sandbox</text>
+        <text x="260" y="265" text-anchor="middle" fill="#55606e">the loop · sub-agents · tests and linters</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-label="Guides and sensors">
+  <div class="kicker">A useful split (Böckeler, 2026)</div>
+  <h2>Guides steer before the action; sensors check after it</h2>
+  <div class="cols cols-2 gap-s">
+    <div class="card c-teal"><h4>Guides (feed-forward)</h4>
+      <ul class="bullets small mb0">
+        <li>System prompt and AGENTS.md</li>
+        <li>Tool names, descriptions, enums</li>
+        <li>Skills and examples</li>
+        <li>Permissions that make wrong actions impossible</li>
+      </ul></div>
+    <div class="card c-coral"><h4>Sensors (feedback)</h4>
+      <ul class="bullets small mb0">
+        <li>Tests, type checkers, linters</li>
+        <li>Tool errors that say what to do next</li>
+        <li>Evals and LLM reviewers</li>
+        <li>Traces and audit logs for humans</li>
+      </ul></div>
+  </div>
+  <div class="callout tip mt"><b>Rule of thumb:</b> guides make the right action likely; sensors make the wrong one visible fast enough to fix. A harness with only guides is hope; with only sensors it is expensive.</div>
+</section>
+
+<section class="slide" data-label="Pi">
+  <div class="kicker">Harness 1 · Pi (Mario Zechner and contributors, MIT, ~117k stars)</div>
+  <h2>Pi: the minimal coding-agent harness</h2>
+  <div class="cols cols-2">
+    <div>
+      <ul class="bullets small">
+        <li><b>Four default tools</b>: <code>read</code>, <code>bash</code>, <code>edit</code>, <code>write</code> (+ <code>grep</code>, <code>find</code>, <code>ls</code> on request).</li>
+        <li><b>A short system prompt</b> in named sections: preamble, tools, rules, docs, project context (AGENTS.md / CLAUDE.md), skills, cwd.</li>
+        <li><b>Sessions</b> as a JSONL tree you can branch and fork; compaction inserts a summary entry.</li>
+        <li><b>Interfaces</b>: terminal UI, <code>--print</code>, <code>--mode json</code> events, <code>--mode rpc</code>, a TypeScript SDK. MCP built in since 1.x.</li>
+        <li><b>OpenClaw is built on it.</b></li>
+      </ul>
+    </div>
+    <div class="stack">
+      <pre class="code s" data-file="terminal"><code class="language-bash">npm install -g --ignore-scripts \
+    @earendil-works/pi-coding-agent
+export OPENROUTER_API_KEY=...
+pi --mode json --no-session \
+   --provider openrouter \
+   --model google/gemma-4-31b-it:free \
+   --tools read,grep,find,ls \
+   "Why does test_fees fail? Don't edit."</code></pre>
+      <div class="callout warn small"><b>From Pi's own docs:</b> it "does not ask for approval before every tool call" and has no built-in sandbox. Run it in a container or VM.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-label="Pi's loop">
+  <div class="kicker">Reading the source</div>
+  <h2>Pi's loop is your loop, with more exits</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="packages/agent/src/agent-loop.ts (condensed)"><code class="language-typescript">while (true) {                        // follow-ups
+  let hasMoreToolCalls = true;
+  while (hasMoreToolCalls || pending.length) {
+    // steering messages, compaction, model switch
+    const message = await streamAssistantResponse(…);
+    if (message.stopReason === "error" ||
+        message.stopReason === "aborted") return;
+    const toolCalls = message.content
+        .filter(c => c.type === "toolCall");
+    // a "length" stop: don't run truncated calls
+    hasMoreToolCalls = toolCalls.length > 0;
+    // execute tools, emit events, append results
+  }
+  // pick up queued follow-up messages, or stop
+}</code></pre>
+    <div class="trace s">
+      <div class="ev user"><b>event</b><span><code>agent_start</code> · <code>turn_start</code></span></div>
+      <div class="ev model"><b>event</b><span><code>message_update</code> (text / thinking / toolcall deltas)</span></div>
+      <div class="ev call"><b>event</b><span><code>tool_execution_start</code> {toolName, args}</span></div>
+      <div class="ev result"><b>event</b><span><code>tool_execution_end</code> {result, isError, durationMs}</span></div>
+      <div class="ev model"><b>event</b><span><code>turn_end</code> · <code>compaction_start/end</code> · <code>auto_retry_start</code></span></div>
+      <div class="ev final"><b>event</b><span><code>agent_end</code> · <code>agent_settled</code></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-label="OpenClaw">
+  <div class="kicker">Harness 2 · OpenClaw (MIT, ~393k stars)</div>
+  <h2>OpenClaw: an always-on personal agent</h2>
+  <div class="cols cols-2">
+    <div>
+      <ul class="bullets small">
+        <li><b>Gateway</b>: a long-running daemon that hosts the agent (Pi's loop) and its sessions.</li>
+        <li><b>Channels</b>: talk to it from WhatsApp, Telegram, Slack, Discord and more.</li>
+        <li><b>Heartbeat</b>: it wakes up on a schedule and acts without being asked.</li>
+        <li><b>Files as personality and memory</b>: <code>SOUL.md</code>, <code>AGENTS.md</code>, <code>MEMORY.md</code>.</li>
+        <li><b>ClawHub</b>: a public registry of skills.</li>
+        <li>OpenRouter: <code>openclaw onboard --auth-choice openrouter-api-key</code>.</li>
+      </ul>
+    </div>
+    <div class="stack">
+      <div class="card c-coral flat"><h4>2026: the agent-security case study</h4><p class="small mb0"><b>CVE-2026-25253</b>: a crafted link could leak the gateway token and hand over the agent. <b>"ClawHavoc"</b>: 341 malicious skills on ClawHub. Thousands of gateways exposed to the internet.</p></div>
+      <div class="card c-navy flat"><h4>The lesson</h4><p class="small mb0">Autonomy + private data + outside input + one public registry = the lethal trifecta at scale (Day 4).</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-label="Hermes and Mercury">
+  <div class="kicker">Harnesses 3 and 4</div>
+  <h2>Hermes Agent and Mercury Agent</h2>
+  <div class="cols cols-2 gap-s">
+    <div class="card c-purple"><h4>Hermes Agent · Nous Research (MIT, Python, ~256k stars)</h4>
+      <ul class="bullets small mb0">
+        <li><b>Learns procedures</b>: writes and refines its own skills from experience.</li>
+        <li><b>Capped memory</b>: <code>MEMORY.md</code> (~2,200 chars) and <code>USER.md</code> (~1,375) that it must curate.</li>
+        <li>Config in <code>~/.hermes/config.yaml</code>; <code>provider: openrouter</code> works out of the box.</li>
+        <li>CVE-2026-9353: self-written skills are code, so they are an attack surface too.</li>
+      </ul></div>
+    <div class="card c-amber"><h4>Mercury Agent · cosmicstack-labs (~3.4k stars)</h4>
+      <ul class="bullets small mb0">
+        <li><b>Budgets as configuration</b>: token limits per task.</li>
+        <li><b>Permission scopes</b> declared in <code>permissions.yaml</code>.</li>
+        <li>Any OpenAI-compatible model through one base-URL setting.</li>
+        <li>A much smaller project: check maintenance before adopting. Not to be confused with Inception's <b>Mercury</b> diffusion LLMs.</li>
+      </ul></div>
+  </div>
+  <p class="xsmall muted mt-s">Star counts and versions as of October 2026. Also worth a look: Claude Code, OpenAI Codex CLI, OpenCode, goose.</p>
+</section>
+
+<section class="slide" data-label="Matrix">
+  <div class="kicker">Lab 3.1, part 3</div>
+  <h2>Compare harnesses on dimensions, not on hype</h2>
+  <table class="t small">
+    <tr><th></th><th>Pi</th><th>OpenClaw</th><th>Hermes</th><th>your loop</th></tr>
+    <tr><td><b>Loop &amp; interfaces</b></td><td>TUI, print, JSON, RPC, SDK</td><td>gateway, channels, heartbeat</td><td>CLI, gateways, schedules</td><td>25 lines, 3 API shapes</td></tr>
+    <tr><td><b>Context files</b></td><td>AGENTS.md, CLAUDE.md</td><td>SOUL.md, AGENTS.md</td><td>AGENTS.md, SOUL.md</td><td>system prompt + AGENTS.md</td></tr>
+    <tr><td><b>Memory</b></td><td>sessions, compaction</td><td>MEMORY.md</td><td>capped MEMORY.md, USER.md</td><td>memory contract</td></tr>
+    <tr><td><b>Skills</b></td><td>on demand; TS extensions</td><td>ClawHub</td><td>self-written</td><td>load_skill</td></tr>
+    <tr><td><b>Permissions</b></td><td>none per call; project trust</td><td>allowlists</td><td>approval for risky commands</td><td>allow / ask / deny + hooks</td></tr>
+    <tr><td><b>Sandbox</b></td><td>bring your own</td><td>optional Docker</td><td>local, Docker, SSH, cloud</td><td>none (Python functions)</td></tr>
+  </table>
+  <p class="small mt-s">Projects change weekly; the dimensions don't. Check the row that matters for your risk before the one that matters for your demo.</p>
+</section>
+
+<section class="slide" data-label="Controls">
+  <div class="kicker">Harness controls in your loop</div>
+  <h2>Three control points between the model and the world</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="python (Lab 3.1)"><code class="language-python">def policy(name, args):          # allow | ask | deny
+    if name in m.READ_TOOLS:  return "allow"
+    if name in m.WRITE_TOOLS: return "ask"
+    return "deny"
+
+def guard(name, args):           # before_tool: block
+    if name == "send_email" and args["to"] not in EMAILS:
+        return '{"error": "Blocked: not a registered email"}'
+
+def audit(name, args, result):   # after_tool: log
+    AUDIT.append(redact({"tool": name, "args": args}))
+
+K.run_agent(task, tools, permission=policy,
+            approve=ask_officer, before_tool=guard,
+            after_tool=audit)</code></pre>
+    <div class="stack">
+      <div class="card c-teal flat"><h4>Permission</h4><p class="small mb0">Per tool: allow, ask a human, or deny. Claude Code's permission modes and Pi's tool allowlists are this.</p></div>
+      <div class="card c-coral flat"><h4>Hook before</h4><p class="small mb0">Code that inspects arguments and can block. Encodes rules a tired approver might miss.</p></div>
+      <div class="card c-purple flat"><h4>Hook after</h4><p class="small mb0">Redact, trim, log. An audit trail outside the model's reach.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide lab top">
+  <div class="cols cols-2">
+    <div>
+      <div class="lab-tag">Lab 3.1 · 25 min</div>
+      <h2>Harness teardown</h2>
+      <a class="nb" href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_1_harness_teardown.ipynb" target="_blank" rel="noopener">labs/D3_1_harness_teardown.ipynb ↗</a>
+      <p class="small mt">Run Pi on a free model (or read the sample stream), map its events to your trace, compare harnesses, and add controls to your loop.</p>
+    </div>
+    <ul class="checklist">
+      <li>Pi's JSON events: tools, turns, tokens, final answer <span class="min">6'</span></li>
+      <li>Pi's prompt and loop; convert its events to your trace <span class="min">5'</span></li>
+      <li>Four harnesses, one matrix <span class="min">4'</span></li>
+      <li>Permissions, a guard and an audit log; attack with the contractor email <span class="min">10'</span></li>
+      <li class="stretch">✱ Pi in read-only mode on a real bug</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide quiz">
+  <div class="kicker">Checkpoint</div>
+  <h2>An officer approves Rafeeq's <code>send_email</code> to an outside address without reading it. What should have stopped it?</h2>
+  <div class="opts">
+    <div class="opt" data-k="A">A better system prompt</div>
+    <div class="opt" data-k="B" data-ok>A <code>before_tool</code> guard that enforces "registered address only" in code, whatever the approval says</div>
+    <div class="opt" data-k="C">An audit log entry</div>
+  </div>
+  <div class="why callout tip small"><b>B.</b> Approvals catch the unexpected; guards enforce what you already know. The audit log (C) only tells you afterwards.</div>
+</section>
+
+<section class="slide break" data-label="Break">
+  <div class="kicker">Break</div>
+  <h1>10-minute break</h1>
+  <div class="timer" data-minutes="10"></div>
+  <p class="lead">Next: Session 2 · Agent SDKs and hosted agents</p>
+</section>
+
+<!-- ======================= SESSION 2 ======================= -->
+<section class="slide section" data-session="Session 2 · Agent SDKs and hosted agents">
+  <div class="kicker">Session 2</div>
+  <h1>Agent SDKs and hosted agents</h1>
+  <ul class="bullets outcomes tight">
+    <li>Place your options on the build-vs-buy spectrum</li>
+    <li>Use the OpenAI Agents SDK on any model: tools, guardrails, approvals, sessions</li>
+    <li>Know what the Claude Agent SDK, OpenAI's Agents API and Claude Managed Agents take off your hands</li>
+    <li>Name what each choice locks you into</li>
+  </ul>
+  <div class="sess-no">02</div>
+</section>
+
+<section class="slide" data-label="Spectrum">
+  <div class="kicker">Build vs. buy</div>
+  <h2>Who writes the harness, and who runs it?</h2>
+  <div class="flow">
+    <div class="step c-navy"><b>Raw API + your loop</b>Day 1: full control, all the work</div>
+    <div class="arrow">→</div>
+    <div class="step c-teal"><b>Agent SDK</b>OpenAI Agents SDK, Claude Agent SDK, LangGraph, PydanticAI, Google ADK</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>Open harness</b>Pi, OpenClaw, Hermes as a runtime you configure</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>Hosted agents</b>OpenAI Agents API, Claude Managed Agents: the vendor runs the loop and the sandbox</div>
+  </div>
+  <table class="t small mt">
+    <tr><th></th><th>You own</th><th>You give up</th></tr>
+    <tr><td><b>SDK</b></td><td>runtime, data, model choice</td><td>some visibility into exact requests; the SDK's abstractions</td></tr>
+    <tr><td><b>Hosted</b></td><td>tools and policy</td><td>where state and logs live, model choice, data residency (PDPL: check where sessions are stored)</td></tr>
+  </table>
+</section>
+
+<section class="slide" data-label="Agents SDK">
+  <div class="kicker">OpenAI Agents SDK (openai-agents 0.24, open source)</div>
+  <h2>Rafeeq in a dozen lines, on a free model</h2>
+  <div class="cols cols-2">
+    <pre class="code s" data-file="python (Lab 3.2)"><code class="language-python">from agents import Agent, Runner, function_tool, …
+set_tracing_disabled(True)
+model = OpenAIChatCompletionsModel(
+    model="google/gemma-4-31b-it:free",
+    openai_client=AsyncOpenAI(base_url=OPENROUTER, …))
+
+rafeeq = Agent(name="Rafeeq", model=model,
+    instructions=madar.SYSTEM_PROMPT,
+    tools=[function_tool(m.get_permit), …,
+           function_tool(m.create_refund,
+                         needs_approval=True)],
+    input_guardrails=[injection_guard])
+result = await Runner.run(rafeeq, question,
+    session=SQLiteSession("sara", "sessions.db"))</code></pre>
+    <div class="stack">
+      <div class="card c-teal flat"><h4>Primitives</h4><p class="small mb0">Agent, Runner, function tools, <b>handoffs</b>, <b>guardrails</b>, <b>sessions</b>, <b>tracing</b>.</p></div>
+      <div class="card c-coral flat"><h4>Approvals</h4><p class="small mb0"><code>needs_approval=True</code> pauses the run; approve or reject each interruption, then resume. The state serialises to JSON.</p></div>
+      <div class="card c-cyan flat"><h4>Any model</h4><p class="small mb0">Responses API on OpenAI; Chat Completions for any other provider.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-label="Claude Agent SDK">
+  <div class="kicker">Claude Agent SDK (claude-agent-sdk)</div>
+  <h2>The Claude Code harness as a library</h2>
+  <div class="cols cols-2">
+    <div>
+      <ul class="bullets small">
+        <li>The loop, built-in tools (files, shell, search, web), <b>permission modes</b>, <b>hooks</b> (before/after tool use), sub-agents, skills, MCP and compaction, from the harness Anthropic ships as Claude Code.</li>
+        <li>You add custom tools (in-process MCP servers), a system prompt and a permission policy.</li>
+        <li>Built for Claude models; it speaks the Messages API.</li>
+      </ul>
+      <div class="callout tip small"><b>When to pick it:</b> agents that work on files and code like a developer would. <b>When not:</b> narrow service agents like Rafeeq with a handful of business tools, where most of the harness is unused surface.</div>
+    </div>
+    <pre class="code s" data-file="python (reference, needs a Claude key)"><code class="language-python">from claude_agent_sdk import query, ClaudeAgentOptions
+
+options = ClaudeAgentOptions(
+    system_prompt="You maintain madar_fees.",
+    allowed_tools=["Read", "Edit", "Bash"],
+    permission_mode="acceptEdits",
+    cwd="artifacts/ralph/madar_fees",
+)
+async for message in query(
+        prompt="Make tests/test_fees.py pass.",
+        options=options):
+    print(message)</code></pre>
+  </div>
+</section>
+
+<section class="slide" data-label="Hosted agents">
+  <div class="kicker">The vendor runs the loop</div>
+  <h2>OpenAI Agents API and Claude Managed Agents</h2>
+  <div class="cols cols-2 gap-s">
+    <div class="card c-navy"><h4>OpenAI Agents API (beta, Sep 2026)</h4>
+      <ul class="bullets small mb0">
+        <li>Agents as stored objects with tools, instructions and versions.</li>
+        <li>Runs with sessions, tool approvals and hosted tools, on OpenAI's infrastructure.</li>
+        <li>Successor path for Assistants (shut down Aug 2026) and Agent Builder (shuts down Nov 2026).</li>
+      </ul></div>
+    <div class="card c-coral"><h4>Claude Managed Agents (beta, Apr 2026)</h4>
+      <ul class="bullets small mb0">
+        <li>Anthropic runs the loop <b>and</b> a per-session container where tools execute.</li>
+        <li>Versioned agent configs, sessions with an event stream, skills and MCP.</li>
+        <li>Vaults keep credentials out of the sandbox; outcomes let a grader iterate the agent against a rubric; scheduled deployments.</li>
+      </ul></div>
+  </div>
+  <div class="callout warn mt"><b>Questions before you buy:</b> where do sessions, files and logs live (PDPL, data residency)? Can you export traces? Which models can you use? What happens to your agent when the beta changes?</div>
+</section>
+
+<section class="slide lab top">
+  <div class="cols cols-2">
+    <div>
+      <div class="lab-tag">Lab 3.2 · 25 min</div>
+      <h2>Rafeeq on the OpenAI Agents SDK</h2>
+      <a class="nb" href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_2_agents_sdk.ipynb" target="_blank" rel="noopener">labs/D3_2_agents_sdk.ipynb ↗</a>
+      <p class="small mt">Rebuild Rafeeq on the SDK with a free OpenRouter model, then add a guardrail, approvals and a session.</p>
+    </div>
+    <ul class="checklist">
+      <li>Agent, model and function tools from Madar's methods <span class="min">6'</span></li>
+      <li>An input guardrail against injected instructions <span class="min">5'</span></li>
+      <li>Approvals for write tools: interrupt, decide, resume <span class="min">8'</span></li>
+      <li>A SQLite session; the SDK vs. your loop <span class="min">6'</span></li>
+      <li class="stretch">✱ Streaming run-item events</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide quiz">
+  <div class="kicker">Checkpoint</div>
+  <h2>An officer approves a refund an hour after Rafeeq asked. What must the system keep in between?</h2>
+  <div class="opts">
+    <div class="opt" data-k="A">Nothing: the model will remember the conversation</div>
+    <div class="opt" data-k="B" data-ok>The paused run's state (history, pending call, arguments), stored durably and resumable</div>
+    <div class="opt" data-k="C">Only the refund amount, so it can be re-created</div>
+  </div>
+  <div class="why callout tip small"><b>B.</b> The model remembers nothing between calls. The SDK serialises a <code>RunState</code>; hosted runtimes keep it for you; tomorrow's graph keeps it in a checkpoint.</div>
+</section>
+
+<section class="slide break" data-label="Long break">
+  <div class="kicker">Break</div>
+  <h1>20-minute break</h1>
+  <div class="timer" data-minutes="20"></div>
+  <p class="lead">Next: Session 3 · Loop engineering</p>
+</section>
+
+<!-- ======================= SESSION 3 ======================= -->
+<section class="slide section" data-session="Session 3 · Loop engineering">
+  <div class="kicker">Session 3</div>
+  <h1>Loop engineering</h1>
+  <ul class="bullets outcomes tight">
+    <li>Explain why long tasks need an outer loop with fresh context</li>
+    <li>Keep state in files and git, not in the model</li>
+    <li>Use tests as honest back-pressure, and stop loops that stop progressing</li>
+  </ul>
+  <div class="sess-no">03</div>
+</section>
+
+<section class="slide" data-label="Long-running">
+  <div class="kicker">When one context window isn't enough</div>
+  <h2>Long tasks fail in predictable ways</h2>
+  <div class="cols cols-2">
+    <div class="stack">
+      <div class="card c-coral flat"><h4>Doing too much at once</h4><p class="small mb0">The agent starts five things, runs out of context halfway, and the next session finds a half-built mess.</p></div>
+      <div class="card c-amber flat"><h4>Declaring victory early</h4><p class="small mb0">"All tests pass" after running one file; "fixed" without running anything.</p></div>
+      <div class="card c-purple flat"><h4>Forgetting</h4><p class="small mb0">Compaction kept the summary, lost the detail that mattered.</p></div>
+    </div>
+    <div>
+      <p class="small"><b>Anthropic's harness for long-running agents</b> (Nov 2025):</p>
+      <ul class="bullets small">
+        <li>An <b>initializer</b> run writes a feature list (JSON) and a progress file.</li>
+        <li>Each <b>coding</b> run reads them, does <b>one</b> feature, tests it end to end, commits, and updates the progress file.</li>
+        <li>State lives in the <b>repository</b>: git history, the feature list, the progress notes.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-label="Ralph">
+  <div class="kicker">Geoffrey Huntley, 2025</div>
+  <h2>The Ralph loop</h2>
+  <div class="cols cols-2">
+    <div>
+      <pre class="code" data-file="the original idea"><code class="language-bash">while :; do cat PROMPT.md | claude-code ; done</code></pre>
+      <ul class="bullets small mt-s">
+        <li><b>Fresh context every iteration</b>: no rot, no stale plans; you can change the model or the harness between iterations.</li>
+        <li><b>State outside the model</b>: the code, <code>PROGRESS.md</code>, git.</li>
+        <li><b>Back-pressure</b>: tests, types, linters tell each iteration where it stands.</li>
+        <li><b>One thing per iteration</b>, then stop.</li>
+      </ul>
+    </div>
+    <pre class="code s" data-file="labs/loops/ralph.py (the outer loop)"><code class="language-python">for i in range(1, max_iters + 1):
+    tests = run_tests(repo)
+    history.append(tests["failed"])
+    if tests["failed"] == 0:      stop("success")
+    if stalled(history, patience): stop("no progress")
+    if spent > max_cost:           stop("budget")
+    prompt = PROMPT.format(failures=tests["summary"])
+    run_agent(prompt, coding_tools(repo))  # fresh
+    git("add", "-A"); git("commit", "-m", f"ralph {i}")</code></pre>
+  </div>
+</section>
+
+<section class="slide" data-label="Back-pressure">
+  <div class="kicker">Keep the sensor honest</div>
+  <h2>Tests only push back if the agent can't edit them</h2>
+  <div class="cols cols-2">
+    <div class="trace s">
+      <div class="ev call"><b>call</b><span><code>edit_file("tests/test_fees.py", "750", "400")</code></span></div>
+      <div class="ev guard"><b>guard</b><span><code>{"error": "You may edit only madar_fees/*.py and PROGRESS.md. Never change the tests (AGENTS.md)."}</code></span></div>
+      <div class="ev call"><b>call</b><span><code>read_file("docs/POL-02_fees.md")</code></span></div>
+      <div class="ev result"><b>result</b><span>"2. Illuminated signs pay a 25% surcharge … (after the minimum is applied)."</span></div>
+      <div class="ev call"><b>call</b><span><code>edit_file("madar_fees/fees.py", …)</code> · <code>run_test_suite()</code></span></div>
+    </div>
+    <ul class="bullets small">
+      <li>The rule is in <b>AGENTS.md</b> (a guide) <b>and</b> in <code>edit_file</code> (a hard constraint). Models under pressure do rewrite tests.</li>
+      <li>Review the loop's <b>diff</b>, not its transcript: did anything under <code>tests/</code> change?</li>
+      <li>A passing test suite is back-pressure, not a specification. Some fixes satisfy the test and miss the policy.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide" data-label="Loop design">
+  <div class="kicker">Designing the loop</div>
+  <h2>Exits, checkpoints, and who checks the maker</h2>
+  <div class="cols cols-3 gap-s">
+    <div class="card c-teal"><h4>Four exits</h4><p class="small mb0">Success · iteration budget · no progress (failures haven't fallen for <i>n</i> iterations) · cost or time budget.</p></div>
+    <div class="card c-cyan"><h4>Checkpoints</h4><p class="small mb0">Commit after every iteration: you can diff, bisect, roll back, or restart from any point.</p></div>
+    <div class="card c-coral"><h4>Maker and checker</h4><p class="small mb0">A second agent (or a different model) reviews each diff against the policy before the loop continues.</p></div>
+  </div>
+  <div class="callout tip mt"><b>The loop is harness-agnostic.</b> <code>uv run loops/ralph.py --harness pi</code> runs the same outer loop with Pi inside. Osmani (<i>Loop engineering</i>, Jun 2026): the loop, not the single run, is the unit you design and measure.</div>
+</section>
+
+<section class="slide lab top">
+  <div class="cols cols-2">
+    <div>
+      <div class="lab-tag">Lab 3.3 · 25 min</div>
+      <h2>A loop that fixes code</h2>
+      <a class="nb" href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_3_loop_engineering.ipynb" target="_blank" rel="noopener">labs/D3_3_loop_engineering.ipynb ↗</a>
+      <p class="small mt">Drive a coding agent on <code>madar_fees</code> until its fee tests pass: fresh context, progress file, git, stop conditions.</p>
+    </div>
+    <ul class="checklist">
+      <li>The repository, AGENTS.md and the test guard <span class="min">4'</span></li>
+      <li>One iteration with a fresh context <span class="min">7'</span></li>
+      <li>The outer loop: four exits, one commit per iteration <span class="min">8'</span></li>
+      <li>Review the diff: library changed, tests untouched <span class="min">6'</span></li>
+      <li class="stretch">✱ The same loop around Pi</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide quiz">
+  <div class="kicker">Checkpoint</div>
+  <h2>Iterations 3, 4 and 5 all end with 4 failing tests. What should the loop do?</h2>
+  <div class="opts">
+    <div class="opt" data-k="A">Keep going: the next iteration might succeed</div>
+    <div class="opt" data-k="B" data-ok>Stop on "no progress", keep the commits, and hand the progress notes to a person</div>
+    <div class="opt" data-k="C">Delete the four failing tests so the next iteration can finish</div>
+  </div>
+  <div class="why callout tip small"><b>B.</b> A stalled loop spends money to stay stuck. The notes and commits make the hand-off cheap. (C) is the failure the test guard exists to prevent.</div>
+</section>
+
+<section class="slide break" data-label="Break">
+  <div class="kicker">Break</div>
+  <h1>10-minute break</h1>
+  <div class="timer" data-minutes="10"></div>
+  <p class="lead">Next: Session 4 · Evaluating agents</p>
+</section>
+
+<!-- ======================= SESSION 4 ======================= -->
+<section class="slide section" data-session="Session 4 · Evaluating agents">
+  <div class="kicker">Session 4</div>
+  <h1>Evaluating agents</h1>
+  <ul class="bullets outcomes tight">
+    <li>Build a task suite with code graders, state checks and an LLM judge</li>
+    <li>Read failures with error analysis, not just a score</li>
+    <li>Measure reliability with pass^k</li>
+    <li>Trace agents with OpenTelemetry's GenAI conventions</li>
+  </ul>
+  <div class="sess-no">04</div>
+</section>
+
+<section class="slide" data-label="Vocabulary">
+  <div class="kicker">Anthropic, Demystifying evals for AI agents (2026)</div>
+  <h2>Tasks, trials, graders, transcripts, outcomes</h2>
+  <table class="t">
+    <tr><th>Term</th><th>Meaning</th><th>Rafeeq's suite</th></tr>
+    <tr><td><b>Task</b></td><td>one input with success criteria</td><td>30 lines in <code>data/eval/tasks.jsonl</code></td></tr>
+    <tr><td><b>Trial</b></td><td>one attempt at a task (agents are stochastic)</td><td><code>trials=k</code>, cache off</td></tr>
+    <tr><td><b>Grader</b></td><td>logic that scores part of the result</td><td>contains, not_contains, tool_called, db, judge</td></tr>
+    <tr><td><b>Transcript</b></td><td>everything the agent did</td><td><code>run.trace</code>, <code>run.tool_calls</code></td></tr>
+    <tr><td><b>Outcome</b></td><td>the state of the world afterwards</td><td>the run's own copy of <code>madar.sqlite</code></td></tr>
+  </table>
+  <div class="callout tip mt"><b>Grade outcomes, not claims.</b> "Your inspection is moved" is a claim; <code>SELECT slot FROM inspections …</code> = <code>2026-11-05 11:00</code> is an outcome.</div>
+</section>
+
+<section class="slide" data-label="Graders">
+  <div class="kicker">Choosing graders</div>
+  <h2>Code where you can, a model where you must</h2>
+  <div class="cols cols-3 gap-s">
+    <div class="card c-teal"><h4>Code graders</h4><p class="small">String, tool-call and database checks. Fast, cheap, exact; brittle to phrasing.</p><span class="pill c-teal">43 checks in our suite</span></div>
+    <div class="card c-cyan"><h4>LLM judges</h4><p class="small">A rubric per task. Flexible; needs its own validation, ideally a different model from the agent.</p><span class="pill c-cyan">8 rubrics</span></div>
+    <div class="card c-coral"><h4>Human review</h4><p class="small">Read transcripts; label a sample to check the judge. Slow and essential at the start.</p><span class="pill c-coral">✱ in Lab 3.4</span></div>
+  </div>
+  <pre class="code s" style="margin-top:24px" data-file="data/eval/tasks.jsonl (one task)"><code class="language-json">{"id": "refund-rejected", "category": "action", "lang": "ar",
+ "prompt": "تم رفض طلب اللوحة SGN-40220. أريد استرداد الرسوم. …",
+ "graders": [{"type": "db", "sql": "SELECT amount_sar || ':' || status FROM refunds WHERE permit_id = 'SGN-40220'",
+              "expect": "2700:pending_approval"},
+             {"type": "contains_any", "values": ["2700", "2,700", "٢٧٠٠"]}]}</code></pre>
+</section>
+
+<section class="slide" data-label="pass^k">
+  <div class="kicker">Reliability</div>
+  <h2>pass@k asks "can it?"; pass^k asks "will it, every time?"</h2>
+  <div class="cols cols-2">
+    <div>
+      <ul class="bullets small">
+        <li><b>pass@k</b>: at least one of <i>k</i> trials passes. Right for tools where a human picks the best attempt (code suggestions).</li>
+        <li><b>pass^k</b>: all <i>k</i> trials pass. Right for a citizen-facing agent: each citizen gets one attempt.</li>
+        <li>If one trial passes with probability <i>p</i>, independent trials give pass^k ≈ <i>p<sup>k</sup></i>: 90% per trial is 73% over three.</li>
+        <li>τ²-bench reports pass^k for this reason.</li>
+      </ul>
+    </div>
+    <div class="bars">
+      <div class="row"><span>p = 0.90, k = 1</span><div class="bar" style="--w:90%"></div><span class="val">0.90</span></div>
+      <div class="row"><span>pass^3</span><div class="bar" style="--w:73%;--c:var(--cyan)"></div><span class="val">0.73</span></div>
+      <div class="row"><span>pass^5</span><div class="bar" style="--w:59%;--c:var(--coral)"></div><span class="val">0.59</span></div>
+      <div class="row"><span>pass^10</span><div class="bar" style="--w:35%;--c:var(--purple)"></div><span class="val">0.35</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-label="Error analysis">
+  <div class="kicker">Read the failures</div>
+  <h2>Error analysis beats a dashboard</h2>
+  <div class="cols cols-2">
+    <ol class="bullets small">
+      <li>Run the suite; collect every failing trial with its transcript.</li>
+      <li>Read them. Write one root cause per failure in plain words.</li>
+      <li>Group the causes; count them.</li>
+      <li>Fix the biggest group with <b>one</b> change (prompt, tool, context, model).</li>
+      <li>Re-run. Check what flipped in both directions.</li>
+    </ol>
+    <table class="t small">
+      <tr><th>Root cause</th><th>Typical fix</th></tr>
+      <tr><td>wrong fact</td><td>retrieval, tool description</td></tr>
+      <tr><td>missing tool call</td><td>prompt rule, tool naming</td></tr>
+      <tr><td>unsafe action</td><td>permission, guard</td></tr>
+      <tr><td>refused wrongly</td><td>scope in the prompt</td></tr>
+      <tr><td>grader too strict</td><td>fix the grader, not the agent</td></tr>
+    </table>
+  </div>
+  <p class="xsmall muted mt-s">Hamel Husain and Shreya Shankar's evals course; Andrew Ng, <i>Agentic AI</i> (2025): build the eval before you build the fix.</p>
+</section>
+
+<section class="slide" data-label="Traces">
+  <div class="kicker">Observability</div>
+  <h2>Traces: the transcript, in a standard shape</h2>
+  <div class="cols cols-2">
+    <div class="trace s">
+      <div class="ev user"><b>span</b><span><code>invoke_agent Rafeeq</code> · gen_ai.agent.name</span></div>
+      <div class="ev model"><b>span</b><span><code>chat google/gemma-4-31b-it:free</code> · gen_ai.usage.input_tokens = 1,842</span></div>
+      <div class="ev call"><b>span</b><span><code>execute_tool get_permit</code> · gen_ai.tool.name</span></div>
+      <div class="ev model"><b>span</b><span><code>chat …</code> · gen_ai.usage.output_tokens = 96</span></div>
+    </div>
+    <ul class="bullets small">
+      <li><b>OpenTelemetry GenAI semantic conventions</b> name the spans and attributes (<code>gen_ai.*</code>) for model calls, tool calls and agents, so any backend can read them.</li>
+      <li>One trace per run, linked to the eval trial that produced it.</li>
+      <li>Day 4 · S4 sends Rafeeq's traces to a local collector.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide lab top">
+  <div class="cols cols-2">
+    <div>
+      <div class="lab-tag">Lab 3.4 · 25 min</div>
+      <h2>Score Rafeeq</h2>
+      <a class="nb" href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_4_evals.ipynb" target="_blank" rel="noopener">labs/D3_4_evals.ipynb ↗</a>
+      <p class="small mt">Run the 30-task suite (or the 10-task quick subset), analyse the failures, compare two configurations, and measure pass^k.</p>
+    </div>
+    <ul class="checklist">
+      <li>Write two graders: contains_any and db <span class="min">6'</span></li>
+      <li>Run the suite; assign a root cause to every failure <span class="min">7'</span></li>
+      <li>One change, two configurations: what flipped? <span class="min">7'</span></li>
+      <li>pass@k vs. pass^k on repeated trials <span class="min">5'</span></li>
+      <li class="stretch">✱ Is the judge right? Label five answers yourself</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide quiz">
+  <div class="kicker">Checkpoint</div>
+  <h2>Rafeeq says "Your refund has been created" but the refunds table is empty. Which grader catches it?</h2>
+  <div class="opts">
+    <div class="opt" data-k="A">contains_any "refund"</div>
+    <div class="opt" data-k="B">An LLM judge with the rubric "confirms the refund"</div>
+    <div class="opt" data-k="C" data-ok>A db grader on the refunds table</div>
+  </div>
+  <div class="why callout tip small"><b>C.</b> Only the outcome check sees the world. A and B grade the claim, and both would pass a confident hallucination.</div>
+</section>
+
+<!-- ======================= CLOSING ======================= -->
+<section class="slide" data-label="Recap">
+  <div class="kicker">Day 3 recap</div>
+  <h2>The harness, the loop, and the evidence</h2>
+  <div class="cols cols-2">
+    <ul class="bullets small">
+      <li><b>Agent = model + harness</b>: guides steer, sensors check.</li>
+      <li><b>Harnesses compared</b> on loop, context, memory, skills, permissions, sandbox, and their security record.</li>
+      <li><b>SDKs and hosted agents</b> trade control for features; know where your state lives.</li>
+    </ul>
+    <ul class="bullets small">
+      <li><b>Loops</b>: fresh context, state in files and git, honest back-pressure, four exits.</li>
+      <li><b>Evals</b>: grade outcomes, read failures, measure pass^k.</li>
+      <li><b>Capstone</b>: you'll need 15+ tasks on two configurations, so start collecting tasks now.</li>
+    </ul>
+  </div>
+  <div class="ladder s mt">
+    <div class="rung c-teal off"><b>Prompt</b>Day 1</div>
+    <div class="rung c-cyan off"><b>Context</b>Day 2</div>
+    <div class="rung c-coral on"><b>Harness</b>Today</div>
+    <div class="rung c-amber on"><b>Loop</b>Today</div>
+    <div class="rung c-purple off"><b>Graph</b>Day 4</div>
+  </div>
+</section>
+
+<section class="slide dark" data-label="Tomorrow">
+  <div class="kicker">Tomorrow · Day 4</div>
+  <h1>Graph Engineering &amp; Production</h1>
+  <p class="lead mt">The top rung: an explicit, durable workflow with a human in it. Then many agents, an attack on Rafeeq, and a service you could ship.</p>
+  <div class="cols cols-4 gap-s mt">
+    <div class="card c-teal"><h4>Graphs</h4><p class="small mb0">LangGraph, checkpoints, interrupt and resume</p></div>
+    <div class="card c-cyan"><h4>Multi-agent</h4><p class="small mb0">Agents as tools, handoffs, A2A</p></div>
+    <div class="card c-coral"><h4>Security</h4><p class="small mb0">OWASP agentic top 10, the lethal trifecta</p></div>
+    <div class="card c-purple"><h4>Production</h4><p class="small mb0">FastAPI, budgets, fallbacks, traces, CI</p></div>
+  </div>
+  <aside class="notes">Ask everyone to bring a capstone idea tomorrow: one paragraph and three example tasks with expected outcomes. Session 4 ends with capstone planning.</aside>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="../assets/logo.js"></script>
+<script src="../assets/deck.js"></script>
+</body>
+</html>
