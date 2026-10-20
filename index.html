@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic AI Systems Engineering</title>
+<link rel="icon" href="assets/img/academy.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1c355e; --teal: #00ae8d; --coral: #e96852; --cyan: #00c1de; --amber: #ffb548; --purple: #625d9c;
+    --ink: #101820; --paper: #f7f5f0; --paper-2: #efece4; --line: #d4d0c5; --muted: #5b6472;
+    --font: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.55 var(--font); }
+  a { color: var(--teal); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  header {
+    background: radial-gradient(900px 500px at 85% 0%, rgba(0,174,141,.25), transparent 60%),
+                radial-gradient(700px 400px at 0% 100%, rgba(255,181,72,.18), transparent 60%), var(--navy);
+    color: #fff; padding: 28px 0 56px;
+  }
+  .logo { height: 44px; color: #fff; display: flex; }
+  .logo svg { height: 100%; width: auto; }
+  .kicker { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--amber); margin: 48px 0 10px; }
+  h1 { font-size: clamp(34px, 6vw, 58px); line-height: 1.05; margin: 0 0 14px; letter-spacing: -.01em; }
+  header p { color: rgba(255,255,255,.8); font-size: 20px; max-width: 760px; margin: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .meta span { font-size: 14px; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.3); }
+  .meta span.track { background: var(--amber); color: var(--ink); border-color: var(--amber); font-weight: 600; }
+  h2 { color: var(--navy); font-size: 28px; margin: 56px 0 16px; }
+  h3 { color: var(--navy); margin: 0 0 6px; font-size: 20px; }
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .card { background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--c, var(--navy)); border-radius: 14px; padding: 20px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .day { background: #fff; border: 1px solid var(--line); border-radius: 16px; margin-bottom: 18px; overflow: hidden; }
+  .day-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 22px; border-left: 8px solid var(--c); }
+  .day-head .t { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--c); font-weight: 700; }
+  .day-head h3 { font-size: 22px; margin: 2px 0 0; }
+  .btn { display: inline-block; text-decoration: none; background: var(--navy); color: #fff; padding: 9px 16px; border-radius: 10px; font-weight: 600; font-size: 15px; }
+  .btn:hover { background: #142846; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  td, th { padding: 10px 22px; border-top: 1px solid var(--paper-2); text-align: left; vertical-align: top; }
+  th { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  td.brk { color: var(--muted); font-style: italic; }
+  code { font-family: var(--mono); font-size: 13.5px; background: rgba(28,53,94,.07); padding: 1px 6px; border-radius: 5px; }
+  .two { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  ul { padding-left: 20px; } li { margin-bottom: 6px; }
+  .bar { display: grid; grid-template-columns: 1fr 52px; gap: 10px; align-items: center; margin-bottom: 8px; font-size: 15px; }
+  .bar i { display: block; height: 10px; border-radius: 5px; background: var(--c, var(--teal)); width: var(--w); margin-top: 4px; }
+  footer { margin: 64px 0 0; padding: 24px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  .scroll { overflow-x: auto; }
+  @media (max-width: 640px) { td, th { padding: 9px 12px; } .day-head { padding: 16px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo" id="logo"></div>
+    <div class="kicker">AI Engineering Track · Bootcamp</div>
+    <h1>Agentic AI Systems Engineering</h1>
+    <p lang="ar" dir="rtl" style="font-size:24px;margin-bottom:12px;text-align:left">هندسة أنظمة الذكاء الاصطناعي التوكيلي</p>
+    <p>Build agents that work, and the systems around them: LLM APIs and the agent loop, context engineering, harnesses, loops and graphs, then security, evaluation and production. With free open models over OpenRouter and Hugging Face.</p>
+    <div class="meta">
+      <span class="track">AI Engineering Track</span>
+      <span>4 teaching days × 4h + capstone day</span>
+      <span>16 hands-on labs in Python</span>
+      <span>Free API models only</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2>One case study, all week</h2>
+  <p><b>Madar Municipal Services</b> is a fictional municipality that issues building, renovation, signage, food-truck and event permits. Participants build <b>Rafeeq (رفيق)</b>, its bilingual permit assistant, and the systems around it: tools over three API shapes, retrieval over ten bilingual policies, memory and skills, an MCP server, a harness with permissions, a Ralph loop that fixes code, an eval suite, a review graph with a human gate, an A2A worker, an attack and its defence, and an HTTP service with traces. All data is synthetic.</p>
+  <div class="grid">
+    <div class="card" style="--c:var(--teal)"><h3>Prompt</h3><p>Chat Completions, Responses and Messages APIs; tools; the agent loop</p></div>
+    <div class="card" style="--c:var(--cyan)"><h3>Context</h3><p>Budgets, compaction, retrieval, memory, Agent Skills, MCP</p></div>
+    <div class="card" style="--c:var(--coral)"><h3>Harness &amp; loop</h3><p>Pi, OpenClaw, Hermes, Mercury; Agents SDK; Ralph loops; evals</p></div>
+    <div class="card" style="--c:var(--purple)"><h3>Graph &amp; production</h3><p>LangGraph, multi-agent and A2A, security, FastAPI, OpenTelemetry</p></div>
+    <div class="card" style="--c:var(--amber)"><h3>Demonstrate</h3><p>Capstones: a working agent system, live demo, evals, security note</p></div>
+  </div>
+
+  <h2>Schedule and materials</h2>
+  <p style="color:var(--muted)">Each day: Session 1 → 10' break → Session 2 → 20' break → Session 3 → 10' break → Session 4. Each session is about 20–25 minutes of concepts and demos, then a 25-minute lab. In the slides press <code>F</code> for fullscreen, <code>←</code> <code>→</code> to navigate, <code>N</code> for speaker notes, <code>?</code> for help.</p>
+
+  <div class="day">
+    <div class="day-head" style="--c:var(--teal)"><div><div class="t">Day 1</div><h3>From Model to Agent: LLM APIs, Tools and the Loop</h3></div><a class="btn" href="slides/day1.html">Open slides →</a></div>
+    <div class="scroll"><table>
+      <tr><th>Session</th><th>Lab notebook (opens in Colab)</th></tr>
+      <tr><td><b>1 · The agentic landscape</b>: agents vs. workflows, the engineering ladder, three API shapes, OpenRouter and HF, reading benchmarks</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_1_two_providers.ipynb">D1_1_two_providers</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>2 · The OpenAI Responses API</b>: items, structured outputs, streaming events, stateless replay, Open Responses, the Decisions pattern</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_2_responses_api.ipynb">D1_2_responses_api</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
+      <tr><td><b>3 · The Anthropic Messages API and tool design</b>: content blocks, tool_use / tool_result, thinking, caching, who serves /v1/messages, tools for agents</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_3_messages_and_tools.ipynb">D1_3_messages_and_tools</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>4 · The agent loop from scratch</b>: stop conditions, budgets, errors as observations, traces, one loop over three shapes</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_4_agent_loop.ipynb">D1_4_agent_loop</a></td></tr>
+    </table></div>
+  </div>
+
+  <div class="day">
+    <div class="day-head" style="--c:var(--cyan)"><div><div class="t">Day 2</div><h3>Context Engineering</h3></div><a class="btn" href="slides/day2.html">Open slides →</a></div>
+    <div class="scroll"><table>
+      <tr><th>Session</th><th>Lab notebook (opens in Colab)</th></tr>
+      <tr><td><b>1 · Context is a budget</b>: context rot, four failures, write/select/compress/isolate, caching, compaction</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_1_context_budget.ipynb">D2_1_context_budget</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>2 · Retrieval for agents</b>: BM25, embeddings, hybrid search, Arabic, agentic search tools</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_2_retrieval.ipynb">D2_2_retrieval</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
+      <tr><td><b>3 · Memory, skills and context files</b>: the memory-tool contract, capped memory, AGENTS.md, Agent Skills</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_3_memory_skills.ipynb">D2_3_memory_skills</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>4 · Model Context Protocol</b>: tools, resources, prompts; the stateless 2026-07-28 revision; stdio and HTTP</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_4_mcp.ipynb">D2_4_mcp</a></td></tr>
+    </table></div>
+  </div>
+
+  <div class="day">
+    <div class="day-head" style="--c:var(--coral)"><div><div class="t">Day 3</div><h3>Harness &amp; Loop Engineering</h3></div><a class="btn" href="slides/day3.html">Open slides →</a></div>
+    <div class="scroll"><table>
+      <tr><th>Session</th><th>Lab notebook (opens in Colab)</th></tr>
+      <tr><td><b>1 · Anatomy of a harness</b>: guides and sensors; Pi, OpenClaw, Hermes, Mercury; permissions and hooks</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_1_harness_teardown.ipynb">D3_1_harness_teardown</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>2 · Agent SDKs and hosted agents</b>: OpenAI Agents SDK, Claude Agent SDK, Agents API, Managed Agents: build vs. buy</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_2_agents_sdk.ipynb">D3_2_agents_sdk</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
+      <tr><td><b>3 · Loop engineering</b>: the Ralph loop, fresh context, progress files, back-pressure, exits</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_3_loop_engineering.ipynb">D3_3_loop_engineering</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>4 · Evaluating agents</b>: graders, LLM judges, pass@k and pass^k, error analysis, traces</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_4_evals.ipynb">D3_4_evals</a></td></tr>
+    </table></div>
+  </div>
+
+  <div class="day">
+    <div class="day-head" style="--c:var(--purple)"><div><div class="t">Day 4</div><h3>Graph Engineering &amp; Production</h3></div><a class="btn" href="slides/day4.html">Open slides →</a></div>
+    <div class="scroll"><table>
+      <tr><th>Session</th><th>Lab notebook (opens in Colab)</th></tr>
+      <tr><td><b>1 · Graph engineering</b>: workflow patterns, LangGraph state and routers, interrupts, checkpoints</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_1_review_graph.ipynb">D4_1_review_graph</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>2 · Multi-agent systems</b>: agents as tools, handoffs, when many agents help, A2A</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_2_multi_agent.ipynb">D4_2_multi_agent</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
+      <tr><td><b>3 · Securing agents</b>: OWASP agentic top 10, the lethal trifecta, layered defences, red teaming</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_3_security.ipynb">D4_3_security</a></td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>4 · Agents in production + capstone kickoff</b>: FastAPI, budgets, fallbacks, OpenTelemetry GenAI, CI smoke eval</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_4_ship_it.ipynb">D4_4_ship_it</a></td></tr>
+    </table></div>
+  </div>
+
+  <div class="day">
+    <div class="day-head" style="--c:var(--amber)"><div><div class="t">Day 5</div><h3>Capstone Project Presentations</h3></div><a class="btn" href="slides/day5.html">Open slides →</a></div>
+    <div class="scroll"><table>
+      <tr><th>Session</th><th>Notes</th></tr>
+      <tr><td><b>1 · Expectations + final prep</b></td><td>Scoring (15'), then re-run evals, rehearse, record a backup</td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>2 · Presentations</b></td><td>Presenters 1–4 (8' talk + demo, 4' Q&amp;A)</td></tr>
+      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
+      <tr><td><b>3 · Presentations</b></td><td>Presenters 5–8</td></tr>
+      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
+      <tr><td><b>4 · Final presentations, review &amp; closing</b></td><td>Presenters 9–11, peer feedback, lessons learned</td></tr>
+    </table></div>
+  </div>
+
+  <div class="two">
+    <div>
+      <h2>Capstone</h2>
+      <p>Individually or in pairs, build a working agent system on one of three tracks:</p>
+      <ul>
+        <li><b>Rafeeq in production</b>: the Madar assistant as a complete service with MCP tools, memory, approvals, security, evals and an API</li>
+        <li><b>Your harness</b>: a domain harness for a real workflow in your entity, with context files, permissions, a loop and evals</li>
+        <li><b>Graph workflow</b>: a durable, human-in-the-loop process as a graph with agents inside nodes</li>
+      </ul>
+      <p>Minimum: 3+ tools (one over MCP), a context file plus memory or retrieval plus a compaction or budget rule, an approval on a write action with step and cost budgets, 15+ eval tasks on two configurations with an error analysis, and a security note (trifecta, one attack, one defence). Starter kit: <a href="https://github.com/SDAIAAcademy/agentic-ai/tree/main/labs/capstone">labs/capstone/</a>.</p>
+    </div>
+    <div>
+      <h2>Rubric</h2>
+      <div class="bar"><span>Working system and live demo<i style="--w:100%"></i></span><b>25%</b></div>
+      <div class="bar"><span>Context and harness engineering decisions<i style="--w:100%;--c:var(--cyan)"></i></span><b>25%</b></div>
+      <div class="bar"><span>Evaluation and error analysis<i style="--w:80%;--c:var(--coral)"></i></span><b>20%</b></div>
+      <div class="bar"><span>Security, governance and operability<i style="--w:80%;--c:var(--purple)"></i></span><b>20%</b></div>
+      <div class="bar"><span>Presentation and reproducibility<i style="--w:40%;--c:var(--amber)"></i></span><b>10%</b></div>
+    </div>
+  </div>
+
+  <div class="two">
+    <div>
+      <h2>Participants will be able to</h2>
+      <ul>
+        <li>Call LLMs through the Chat Completions, Responses and Messages APIs, and write the agent loop over all three</li>
+        <li>Design tools and context deliberately: budgets, compaction, retrieval, memory, skills and MCP</li>
+        <li>Take a harness apart (Pi, OpenClaw, Hermes, Mercury) and add permissions, hooks and budgets to their own</li>
+        <li>Choose between building on an SDK, a hosted agent runtime or their own loop</li>
+        <li>Run agents in outer loops and as graphs with human gates, checkpoints and many agents</li>
+        <li>Evaluate agents with graders, judges and pass^k, secure them against injection, and ship them as a traced service</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Setup</h2>
+      <p><b>Audience:</b> Python developers and ML or data engineers who have called an LLM API. No prior agent framework experience needed.</p>
+      <p><b>Environment:</b> any laptop CPU with <code>uv</code>, or Google Colab. All model calls go to <b>free</b> API models (an OpenRouter key; a one-time 10-credit top-up raises the free quota from 50 to 1,000 requests a day). Node.js 22.19+ is optional, for the Pi teardown. Run <a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/00_setup_check.ipynb">00_setup_check</a> before Day 1; see <a href="https://github.com/SDAIAAcademy/agentic-ai/tree/main/labs#readme">labs/README.md</a>.</p>
+      <p><b>Stack:</b> openai · anthropic · openai-agents · OpenRouter · Hugging Face · Pydantic · model2vec · bm25s · mcp (SDK v2) · LangGraph · a2a-sdk · FastAPI · OpenTelemetry · Pi · PEP 723 scripts with <code>uv run</code>.</p>
+      <p><b>Choosing models:</b> <a href="https://artificialanalysis.ai/">Artificial Analysis</a>, <a href="https://lmarena.ai/leaderboard">LMArena</a>, <a href="https://gorilla.cs.berkeley.edu/leaderboard.html">BFCL</a>, <a href="https://taubench.com">τ²-bench</a>, <a href="https://www.tbench.ai/leaderboard">Terminal-Bench</a>, and then your own eval.</p>
+    </div>
+  </div>
+</main>
+<footer><div class="wrap">SDAIA Academy · AI Engineering Track · Agentic AI Systems Engineering</div></footer>
+<script src="assets/logo.js"></script>
+<script>document.getElementById('logo').innerHTML = window.ACADEMY_LOGO || 'SDAIA Academy';</script>
+</body>
+</html>
