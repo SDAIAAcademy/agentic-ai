@@ -125,15 +125,8 @@ K.check(json.loads(fee)["fee_sar"] == 840, "the stdio server answers")
 
 # %%
 PORT = 8791
-http_server = subprocess.Popen([uv, "run", "--quiet", str(SERVER_FILE), "--http", str(PORT)],
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 URL = f"http://127.0.0.1:{PORT}/mcp"
-for _ in range(60):
-    try:
-        httpx.get(URL, timeout=1)
-        break
-    except httpx.HTTPError:
-        time.sleep(0.5)
+http_server = K.serve([uv, "run", "--quiet", str(SERVER_FILE), "--http", str(PORT)], ready_url=URL)
 print("server pid", http_server.pid, "at", URL)
 
 # %% [markdown]
@@ -167,7 +160,7 @@ print(called["result"]["content"][0]["text"])
 K.check("result" in called and not called["result"]["isError"], "a tool call by hand")
 
 # %%
-http_server.terminate()
+K.stop(http_server)
 
 # %% [markdown]
 # ## 4 · MCP tools in your agent loop (10')

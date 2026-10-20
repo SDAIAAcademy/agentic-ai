@@ -60,6 +60,8 @@ Free models change often. If the default disappears or is busy, pick another fre
 | 3 | Rafeeq on the OpenAI Agents SDK | [`D3_2_agents_sdk.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_2_agents_sdk.ipynb) | Chat Completions via the SDK |
 | 3 | A loop that fixes code | [`D3_3_loop_engineering.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_3_loop_engineering.ipynb) | Chat Completions + git + pytest |
 | 3 | Score Rafeeq | [`D3_4_evals.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_4_evals.ipynb) | Chat Completions |
+| 4 | A permit-review graph | [`D4_1_review_graph.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_1_review_graph.ipynb) | LangGraph + SQLite checkpoints |
+| 4 | Orchestrator and workers | [`D4_2_multi_agent.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_2_multi_agent.ipynb) | Agents SDK + A2A |
 
 Exercises are marked **✏️ Exercise** and raise `NotImplementedError` until you fill them in. Complete reference versions are in `solutions/`. Cells marked **✱ Stretch** are optional. Self-checks print ✅ or ❌. With free models, an occasional ❌ on an answer-quality check can be the model rather than your code: re-run, or compare with the solution.
 
@@ -100,6 +102,7 @@ Nine applicants have known stories for the labs and the eval suite:
 |---|---|---|
 | `servers/madar_mcp.py` | Madar's tools, policies (resources) and triage prompt as an MCP server | `uv run servers/madar_mcp.py` (stdio) or `--http 8765` |
 | `loops/ralph.py` | A Ralph loop: a coding agent fixes `madar_fees` until its tests pass, one commit per iteration | `uv run loops/ralph.py --tests tests/test_fees.py` (`--harness pi` for Pi) |
+| `servers/madar_a2a.py` | Madar's policy worker as an A2A agent (agent card + JSON-RPC) | `uv run servers/madar_a2a.py --port 8792` |
 
 ## Helpers: `agentkit.py`
 
@@ -112,6 +115,8 @@ Nine applicants have known stories for the labs and the eval suite:
 | `run_agent(task, tools, shape=...)` | the course's reference agent loop over all three API shapes, with budgets, permissions and hooks |
 | `count_tokens(obj)` | token estimate of a string or a request part, with an open tokenizer from the Hub |
 | `MCPBridge(server)` | an MCP client usable from synchronous code; `agent_tools()` turns MCP tools into loop tools |
+| `structured(prompt, Schema)` | one call whose answer validates as a Pydantic model (`response_format` + one repair) |
+| `serve(cmd, ready_url)` / `stop(proc)` | start a background server (e.g. `uv run servers/...`) and stop it with its child processes |
 | `LEDGER` | calls, tokens, cached tokens and cost so far |
 
 `evals.py` runs the eval suite: `load_tasks()`, `run_suite(agent, tasks, trials=k)`, `report(df)` (pass@k and pass^k), with code graders and an LLM judge.

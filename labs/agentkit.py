@@ -456,6 +456,81 @@ def text_of(resp: Any) -> str:
     return str(resp)
 
 
+def structured(prompt: str | list[dict], schema: type, *, system: str | None = None, model: str | None = None,
+               repairs: int = 1, **kw):
+    """One Chat Completions call whose answer must validate as the Pydantic model `schema` (Day 1.2's pattern).
+
+    Sends `response_format` with the JSON Schema; models and gateways that ignore it still get the schema in the
+    prompt. An invalid answer is sent back once with the validation error ("repair"). Returns a `schema` instance.
+    """
+    from pydantic import ValidationError
+
+    messages = [{"role": "user", "content": prompt}] if isinstance(prompt, str) else list(prompt)
+    js = schema.model_json_schema()
+    guide = f"Reply with one JSON object that matches this JSON Schema, and nothing else:\n{json.dumps(js, ensure_ascii=False)}"
+    messages = [{"role": "system", "content": f"{system}\n\n{guide}" if system else guide}] + messages
+    fmt = {"type": "json_schema", "json_schema": {"name": schema.__name__, "schema": js}}
+    for attempt in range(repairs + 1):
+        text = text_of(chat(messages, model=model, response_format=fmt, temperature=0, **kw)).strip()
+        start, end = text.find("{"), text.rfind("}")
+        try:
+            return schema.model_validate_json(text[start: end + 1] if start >= 0 else text)
+        except ValidationError as e:
+            if attempt == repairs:
+                raise
+            messages += [{"role": "assistant", "content": text},
+                         {"role": "user", "content": f"That JSON is invalid: {str(e)[:600]}\nReply with the corrected JSON only."}]
+
+
+def serve(cmd: list[str], ready_url: str | None = None, timeout: float = 180):
+    """Start a background server (e.g. `uv run servers/x.py --port N`) and wait until `ready_url` answers.
+
+    Returns the Popen handle; stop it with `stop(proc)`, which ends the whole process tree (`uv run` starts a child
+    Python process that a plain `terminate()` would leave running). Servers are also stopped when the kernel exits.
+    """
+    import atexit
+    import subprocess
+
+    import httpx
+
+    kw = ({"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP} if os.name == "nt" else {"start_new_session": True})
+    proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **kw)
+    atexit.register(stop, proc)
+    deadline = time.time() + timeout
+    while ready_url and time.time() < deadline:  # the first `uv run` installs the script's dependencies
+        if proc.poll() is not None:
+            raise RuntimeError(f"Server exited with code {proc.returncode}: {' '.join(cmd)}")
+        try:
+            httpx.get(ready_url, timeout=2)
+            return proc
+        except httpx.HTTPError:
+            time.sleep(1)
+    if ready_url:
+        stop(proc)
+        raise TimeoutError(f"{ready_url} did not answer within {timeout} s")
+    return proc
+
+
+def stop(proc) -> None:
+    """Stop a server started with `serve`, including its child processes."""
+    import signal
+    import subprocess
+
+    if proc.poll() is not None:
+        return
+    if os.name == "nt":
+        subprocess.run(["taskkill", "/PID", str(proc.pid), "/T", "/F"], capture_output=True)
+    else:
+        try:
+            os.killpg(proc.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+    try:
+        proc.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+
+
 def timed(fn: Callable, *a, **kw):
     t = time.perf_counter()
     out = fn(*a, **kw)
