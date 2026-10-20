@@ -91,7 +91,7 @@ def convert(src: Path, student: bool) -> Path:
     out_dir = LABS if student else LABS / "solutions"
     out_dir.mkdir(exist_ok=True)
     out = out_dir / f"{src.stem}.ipynb"
-    out.write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    out.write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     return out
 
 
