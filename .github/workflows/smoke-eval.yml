@@ -1,0 +1,26 @@
+# Rafeeq's smoke eval (Lab 4.4). Runs on demand and on pull requests that touch the labs.
+# Needs a repository secret OPENROUTER_API_KEY (Settings → Secrets and variables → Actions).
+name: smoke-eval
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ["labs/**"]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Smoke eval
+        working-directory: labs
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: uv run ci/smoke_eval.py --min-rate 0.6
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-eval
+          path: labs/artifacts/ci/

@@ -62,6 +62,8 @@ Free models change often. If the default disappears or is busy, pick another fre
 | 3 | Score Rafeeq | [`D3_4_evals.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_4_evals.ipynb) | Chat Completions |
 | 4 | A permit-review graph | [`D4_1_review_graph.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_1_review_graph.ipynb) | LangGraph + SQLite checkpoints |
 | 4 | Orchestrator and workers | [`D4_2_multi_agent.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_2_multi_agent.ipynb) | Agents SDK + A2A |
+| 4 | Attack and defend | [`D4_3_security.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_3_security.ipynb) | Chat Completions + harness hooks |
+| 4 | Ship it | [`D4_4_ship_it.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_4_ship_it.ipynb) | FastAPI + OpenTelemetry |
 
 Exercises are marked **✏️ Exercise** and raise `NotImplementedError` until you fill them in. Complete reference versions are in `solutions/`. Cells marked **✱ Stretch** are optional. Self-checks print ✅ or ❌. With free models, an occasional ❌ on an answer-quality check can be the model rather than your code: re-run, or compare with the solution.
 
@@ -103,6 +105,9 @@ Nine applicants have known stories for the labs and the eval suite:
 | `servers/madar_mcp.py` | Madar's tools, policies (resources) and triage prompt as an MCP server | `uv run servers/madar_mcp.py` (stdio) or `--http 8765` |
 | `loops/ralph.py` | A Ralph loop: a coding agent fixes `madar_fees` until its tests pass, one commit per iteration | `uv run loops/ralph.py --tests tests/test_fees.py` (`--harness pi` for Pi) |
 | `servers/madar_a2a.py` | Madar's policy worker as an A2A agent (agent card + JSON-RPC) | `uv run servers/madar_a2a.py --port 8792` |
+| `servers/rafeeq_api.py` | Rafeeq as an HTTP service: API keys, sessions, budgets, fallbacks, write tools queued for an officer, OpenTelemetry traces | `RAFEEQ_API_KEYS=dev-key-1 uv run servers/rafeeq_api.py` |
+| `ci/smoke_eval.py` | A smoke eval with a pass-rate gate for CI (`.github/workflows/smoke-eval.yml`) | `uv run ci/smoke_eval.py --min-rate 0.6` |
+| `capstone/starter.py` | Capstone starter: local + MCP tools, spec, compaction, permissions, budgets, eval on two configurations (see `capstone/README.md`) | `uv run capstone/starter.py eval capstone/tasks.example.jsonl` |
 
 ## Helpers: `agentkit.py`
 
