@@ -1,7 +1,7 @@
 # %% [markdown]
 # # Lab 1.2 · Triage with the Responses API
 #
-# Day 1 · Session 2 (The OpenAI Responses API) · 35 min. Chat Completions sends a list of messages and returns one
+# Day 1 · Session 2 (The OpenAI Responses API) · 25 min. Chat Completions sends a list of messages and returns one
 # message. **Responses** sends and returns a list of typed **items** (messages, function calls, function call outputs,
 # reasoning) and is the shape OpenAI builds its agent features on. The open **Open Responses** spec lets other servers
 # offer the same shape, so OpenRouter, vLLM, Ollama and Hugging Face accept it too.
@@ -16,11 +16,11 @@
 # - look at the semantic **streaming events** Responses emits.
 #
 # **Tasks**
-# - [ ] 1 · One request, two shapes (6')
-# - [ ] 2 · Structured triage with `text.format` (9')
-# - [ ] 3 · Triage the inbox and measure (6')
-# - [ ] 4 · A Decisions-style router (10')
-# - [ ] 5 · Streaming events (4')
+# - [ ] 1 · One request, two shapes (4')
+# - [ ] 2 · Structured triage with `text.format` (7')
+# - [ ] 3 · Triage the inbox and measure (4')
+# - [ ] 4 · A Decisions-style router (7')
+# - [ ] 5 · Streaming events (3')
 # - [ ] ✱ Stretch · Stateless vs. stateful conversations
 
 # %%
@@ -68,7 +68,7 @@ def respond(**req) -> Response:
     return resp
 
 # %% [markdown]
-# ## 1 · One request, two shapes (6')
+# ## 1 · One request, two shapes (4')
 #
 # | | Chat Completions | Responses |
 # |---|---|---|
@@ -106,7 +106,7 @@ K.show(rs.output)
 print("usage:", rs.usage)
 
 # %% [markdown]
-# ## 2 · Structured triage with `text.format` (9')
+# ## 2 · Structured triage with `text.format` (7')
 #
 # Triage must return **data**, not prose: a label from a fixed list, the permit ID if any, the language, and whether a
 # person must look at it today. Write the contract as a Pydantic model; Pydantic generates the JSON Schema.
@@ -163,7 +163,7 @@ print(inbox[1]["subject"], "→", t)
 K.check(isinstance(t, Triage), "triage returns a validated Triage object")
 
 # %% [markdown]
-# ## 3 · Triage the inbox and measure (6')
+# ## 3 · Triage the inbox and measure (4')
 #
 # Every message in `inbox` has a gold `label`. Run `triage` over the inbox and compare. Free models allow 50
 # requests a day; set `AGENT_QUICK=1` in `.env` to use 12 messages instead of 30 (cached results are free).
@@ -196,7 +196,7 @@ res[res.gold != res.pred]
 print(pd.crosstab(res.gold, res.pred))
 
 # %% [markdown]
-# ## 4 · A Decisions-style router (10')
+# ## 4 · A Decisions-style router (7')
 #
 # Many agent steps are not "write text" but **decide**: is this a prompt injection? which queue? how urgent? OpenAI's
 # **Decisions API** (beta) is built for that: you send an input and a list of typed questions, and get typed answers
@@ -299,7 +299,7 @@ pd.DataFrame(routed)
 # `injection` becomes a guardrail in front of Rafeeq.
 
 # %% [markdown]
-# ## 5 · Streaming events (4')
+# ## 5 · Streaming events (3')
 #
 # Chat Completions streams raw text **deltas**. Responses streams **semantic events**: `response.created`,
 # `response.output_item.added`, `response.output_text.delta`, `response.function_call_arguments.delta`,

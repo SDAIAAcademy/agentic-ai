@@ -1,7 +1,7 @@
 # %% [markdown]
 # # Lab 1.4 · The agent loop from scratch
 #
-# Day 1 · Session 4 (The agent loop) · 40 min. An agent is a model calling tools **in a loop** until it decides it
+# Day 1 · Session 4 (The agent loop) · 25 min. An agent is a model calling tools **in a loop** until it decides it
 # is done. Everything else in this course (context engineering, harnesses, loops, graphs) wraps this loop. In this
 # lab you:
 # - write the loop yourself in about 25 lines of Chat Completions code;
@@ -10,10 +10,10 @@
 # - run the course's reference loop, `K.run_agent`, on all three API shapes and compare them.
 #
 # **Tasks**
-# - [ ] 1 · Write `my_agent()` (12')
-# - [ ] 2 · Multi-step questions and the trace (8')
-# - [ ] 3 · One loop, three API shapes (8')
-# - [ ] 4 · Break it (8')
+# - [ ] 1 · Write `my_agent()` (8')
+# - [ ] 2 · Multi-step questions and the trace (6')
+# - [ ] 3 · One loop, three API shapes (5')
+# - [ ] 4 · Break it (6')
 # - [ ] ✱ Stretch · Run parallel tool calls concurrently
 
 # %%
@@ -47,7 +47,7 @@ READ = m.tools(m.READ_TOOLS)  # search_policies, get_permit, compute_fee, list_s
 print([t.__name__ for t in READ])
 
 # %% [markdown]
-# ## 1 · Write `my_agent()` (12')
+# ## 1 · Write `my_agent()` (8')
 #
 # ```text
 # messages = [system, user]
@@ -86,7 +86,7 @@ print(answer)
 K.check(answer is not None and "750" in answer, "my_agent computed the fee with a tool (750 SAR)")
 
 # %% [markdown]
-# ## 2 · Multi-step questions and the trace (8')
+# ## 2 · Multi-step questions and the trace (6')
 #
 # Fahad's permit is late. Answering him well needs **two** kinds of information: his permit (verified) and the
 # escalation policy. Nobody tells the model the order; it plans as it goes.
@@ -116,7 +116,7 @@ K.check(summary["verified_first"], "Rafeeq looked up the permit (with verificati
 K.check("9" in run.final or "٩" in run.final, "the answer says the permit is 9 working days overdue")
 
 # %% [markdown]
-# ## 3 · One loop, three API shapes (8')
+# ## 3 · One loop, three API shapes (5')
 #
 # `K.run_agent(..., shape=...)` runs the same loop over Chat Completions, Responses or Messages. Only an **adapter**
 # changes: how the request is built, where tool calls are found, and how results go back:
@@ -150,7 +150,7 @@ shapes
 # (`ChatShape`, `ResponsesShape`, `MessagesShape`): about 25 lines each.
 
 # %% [markdown]
-# ## 4 · Break it (8')
+# ## 4 · Break it (6')
 #
 # Real tools fail and real models loop. Try three failures and watch what the loop does.
 #

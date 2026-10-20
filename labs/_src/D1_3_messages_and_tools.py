@@ -1,7 +1,7 @@
 # %% [markdown]
 # # Lab 1.3 · Rafeeq's first tools, three ways
 #
-# Day 1 · Session 3 (The Anthropic Messages API and tool design) · 35 min. The **Messages** API is Anthropic's shape,
+# Day 1 · Session 3 (The Anthropic Messages API and tool design) · 25 min. The **Messages** API is Anthropic's shape,
 # and many engines serve it too (vLLM, SGLang, llama.cpp, Ollama, LM Studio, LiteLLM, OpenRouter), so coding agents
 # built for Claude can run on open models. In this lab you:
 # - call a free model through the `anthropic` SDK and read its **content blocks** and `stop_reason`;
@@ -10,10 +10,10 @@
 # - measure how much a tool's **name, parameters and description** change the agent's accuracy.
 #
 # **Tasks**
-# - [ ] 1 · Messages basics: blocks and stop reasons (6')
-# - [ ] 2 · One function, three tool schemas (8')
-# - [ ] 3 · A tool round trip by hand (10')
-# - [ ] 4 · Tool design, measured (10')
+# - [ ] 1 · Messages basics: blocks and stop reasons (4')
+# - [ ] 2 · One function, three tool schemas (6')
+# - [ ] 3 · A tool round trip by hand (8')
+# - [ ] 4 · Tool design, measured (7')
 # - [ ] ✱ Stretch · Parallel tool calls
 
 # %%
@@ -58,7 +58,7 @@ def messages(**req) -> Message:
     return msg
 
 # %% [markdown]
-# ## 1 · Messages basics: blocks and stop reasons (6')
+# ## 1 · Messages basics: blocks and stop reasons (4')
 #
 # Three differences from Chat Completions catch everyone once:
 # - `system` is a **top-level parameter**, not a message;
@@ -96,7 +96,7 @@ K.check(short.stop_reason == "max_tokens", "a cut-off reply says so in stop_reas
 # | memory tool, context editing, compaction | the API manages a long-running agent's context | 2 |
 
 # %% [markdown]
-# ## 2 · One function, three tool schemas (8')
+# ## 2 · One function, three tool schemas (6')
 #
 # A tool is a name, a description and a JSON Schema for the arguments. The three shapes wrap the same three things
 # differently. In this course, tools are plain Python methods with type hints and a Google-style docstring; the JSON
@@ -133,7 +133,7 @@ for fn, shape in [(to_chat, "chat"), (to_responses, "responses"), (to_anthropic,
 print(json.dumps(K.tool_schema(m.compute_fee, "anthropic"), ensure_ascii=False)[:300], "…")
 
 # %% [markdown]
-# ## 3 · A tool round trip by hand (10')
+# ## 3 · A tool round trip by hand (8')
 #
 # Sara writes: *"What is the status of REN-10482? My national ID ends with 4821 and my mobile is 0501234821."*
 # One round trip in the Messages shape:
@@ -180,7 +180,7 @@ for turn in convo:
         print(f"{turn['role']:9s} [{b['type']}] {str(body)[:110]}")
 
 # %% [markdown]
-# ## 4 · Tool design, measured (10')
+# ## 4 · Tool design, measured (7')
 #
 # The model sees **only** the name, the description and the schema. Below are two versions of the same fee
 # calculator: `fee` (what a hurried developer writes) and `m.compute_fee` (named, typed, documented, with an enum for
