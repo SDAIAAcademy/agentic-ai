@@ -1,0 +1,7 @@
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.csv text eol=lf
+*.txt text eol=lf
