@@ -431,7 +431,14 @@ def check(cond: bool, msg: str) -> None:
 def lab_dir(name: str, reset: bool = False) -> Path:
     path = ARTIFACTS / name
     if reset and path.exists():
-        shutil.rmtree(path, ignore_errors=True)
+        def writable(func, p, _exc):  # Windows: git object files are read-only and refuse deletion
+            os.chmod(p, 0o700)
+            func(p)
+
+        if sys.version_info >= (3, 12):
+            shutil.rmtree(path, onexc=writable)
+        else:
+            shutil.rmtree(path, onerror=writable)
     path.mkdir(parents=True, exist_ok=True)
     return path
 
