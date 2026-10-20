@@ -56,6 +56,10 @@ Free models change often. If the default disappears or is busy, pick another fre
 | 2 | Search the policies | [`D2_2_retrieval.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_2_retrieval.ipynb) | Chat Completions |
 | 2 | Remember and specialise | [`D2_3_memory_skills.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_3_memory_skills.ipynb) | Chat Completions |
 | 2 | Madar as an MCP server | [`D2_4_mcp.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_4_mcp.ipynb) | MCP (stdio, Streamable HTTP) |
+| 3 | Harness teardown | [`D3_1_harness_teardown.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_1_harness_teardown.ipynb) | Pi (optional, Node.js 22.19+) |
+| 3 | Rafeeq on the OpenAI Agents SDK | [`D3_2_agents_sdk.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_2_agents_sdk.ipynb) | Chat Completions via the SDK |
+| 3 | A loop that fixes code | [`D3_3_loop_engineering.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_3_loop_engineering.ipynb) | Chat Completions + git + pytest |
+| 3 | Score Rafeeq | [`D3_4_evals.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_4_evals.ipynb) | Chat Completions |
 
 Exercises are marked **✏️ Exercise** and raise `NotImplementedError` until you fill them in. Complete reference versions are in `solutions/`. Cells marked **✱ Stretch** are optional. Self-checks print ✅ or ❌. With free models, an occasional ❌ on an answer-quality check can be the model rather than your code: re-run, or compare with the solution.
 
@@ -95,6 +99,7 @@ Nine applicants have known stories for the labs and the eval suite:
 | Script | What it is | Run |
 |---|---|---|
 | `servers/madar_mcp.py` | Madar's tools, policies (resources) and triage prompt as an MCP server | `uv run servers/madar_mcp.py` (stdio) or `--http 8765` |
+| `loops/ralph.py` | A Ralph loop: a coding agent fixes `madar_fees` until its tests pass, one commit per iteration | `uv run loops/ralph.py --tests tests/test_fees.py` (`--harness pi` for Pi) |
 
 ## Helpers: `agentkit.py`
 
@@ -108,3 +113,5 @@ Nine applicants have known stories for the labs and the eval suite:
 | `count_tokens(obj)` | token estimate of a string or a request part, with an open tokenizer from the Hub |
 | `MCPBridge(server)` | an MCP client usable from synchronous code; `agent_tools()` turns MCP tools into loop tools |
 | `LEDGER` | calls, tokens, cached tokens and cost so far |
+
+`evals.py` runs the eval suite: `load_tasks()`, `run_suite(agent, tasks, trials=k)`, `report(df)` (pass@k and pass^k), with code graders and an LLM judge.
