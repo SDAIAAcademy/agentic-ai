@@ -52,6 +52,10 @@ Free models change often. If the default disappears or is busy, pick another fre
 | 1 | Triage with the Responses API | [`D1_2_responses_api.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_2_responses_api.ipynb) | Responses |
 | 1 | Rafeeq's first tools, three ways | [`D1_3_messages_and_tools.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_3_messages_and_tools.ipynb) | Messages |
 | 1 | The agent loop from scratch | [`D1_4_agent_loop.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_4_agent_loop.ipynb) | all three |
+| 2 | Budget the window | [`D2_1_context_budget.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_1_context_budget.ipynb) | Chat Completions |
+| 2 | Search the policies | [`D2_2_retrieval.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_2_retrieval.ipynb) | Chat Completions |
+| 2 | Remember and specialise | [`D2_3_memory_skills.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_3_memory_skills.ipynb) | Chat Completions |
+| 2 | Madar as an MCP server | [`D2_4_mcp.ipynb`](https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_4_mcp.ipynb) | MCP (stdio, Streamable HTTP) |
 
 Exercises are marked **✏️ Exercise** and raise `NotImplementedError` until you fill them in. Complete reference versions are in `solutions/`. Cells marked **✱ Stretch** are optional. Self-checks print ✅ or ❌. With free models, an occasional ❌ on an answer-quality check can be the model rather than your code: re-run, or compare with the solution.
 
@@ -67,6 +71,7 @@ Labs don't depend on each other. Each one opens a fresh copy of the Madar databa
 | Shared inbox | `inbox.jsonl` | 30 messages in Arabic and English with gold triage labels; two contain prompt injections |
 | Policies | `policies/POL-01 … POL-10` | bilingual Markdown: permit types, fees, SLAs and working days, lifecycle, inspections, appeals and refunds, violations, privacy, food-truck zones, assistant scope |
 | Eval suite | `eval/tasks.jsonl` | 30 tasks with graders (string checks, tool-call checks, database checks, LLM judge) |
+| Skills and context file | `skills/*/SKILL.md`, `AGENTS.md` | four Agent Skills (refund, inspection booking, escalation, appeal) and Rafeeq's AGENTS.md, for Lab 2.3 |
 | Loop-engineering repo | `madar_fees/` | a small Python package with seeded bugs and failing tests, for the Ralph loop in Lab 3.3 |
 
 `madar.py` exposes the case study to agents: `Madar(workdir)` is a database copy with typed, documented **tools** (read: `search_policies`, `get_permit`, `compute_fee`, `list_slots`; write: `book_inspection`, `reschedule_inspection`, `create_refund`, `escalate`, `send_email`). Tools enforce Madar's rules themselves (identity verification, the 2-working-day booking rule, refund approval limits) and raise `ToolError` messages the model can act on.
@@ -85,6 +90,12 @@ Nine applicants have known stories for the labs and the eval suite:
 | Huda | BLD-20981 | wants to move inspection INS-9001 to 5 Nov | 1196 · 0548841196 |
 | Yousef | (agent for Fahad) | authorised agent for BLD-20417 | 5530 · +966571475530 |
 
+## Standalone programs
+
+| Script | What it is | Run |
+|---|---|---|
+| `servers/madar_mcp.py` | Madar's tools, policies (resources) and triage prompt as an MCP server | `uv run servers/madar_mcp.py` (stdio) or `--http 8765` |
+
 ## Helpers: `agentkit.py`
 
 | Helper | What it does |
@@ -94,4 +105,6 @@ Nine applicants have known stories for the labs and the eval suite:
 | `tool_schema(fn, shape)` | a tool definition from a typed, documented Python function, for `chat`, `responses`, `anthropic` or `mcp` |
 | `call_tool(tools, name, args)` | runs a tool call; returns JSON, or a JSON error the model can recover from |
 | `run_agent(task, tools, shape=...)` | the course's reference agent loop over all three API shapes, with budgets, permissions and hooks |
+| `count_tokens(obj)` | token estimate of a string or a request part, with an open tokenizer from the Hub |
+| `MCPBridge(server)` | an MCP client usable from synchronous code; `agent_tools()` turns MCP tools into loop tools |
 | `LEDGER` | calls, tokens, cached tokens and cost so far |

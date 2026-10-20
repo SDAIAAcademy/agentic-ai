@@ -262,9 +262,13 @@ def tool_schema(fn: Callable, shape: str = "chat") -> dict:
 
     shape: "chat" (Chat Completions), "responses" (Responses API), "anthropic" (Messages API) or "mcp".
     """
-    description, _ = _parse_doc(fn)
-    params = json_schema_for(fn)
-    name = fn.__name__
+    spec = getattr(fn, "__tool_schema__", None)  # tools that aren't Python functions (e.g. MCP tools) carry their schema
+    if spec:
+        name, description, params = spec["name"], spec["description"], spec["parameters"]
+    else:
+        description, _ = _parse_doc(fn)
+        params = json_schema_for(fn)
+        name = fn.__name__
     if shape == "chat":
         return {"type": "function", "function": {"name": name, "description": description, "parameters": params}}
     if shape == "responses":
@@ -292,7 +296,131 @@ def call_tool(tools: dict[str, Callable], name: str, arguments: str | dict) -> s
         return json.dumps({"error": str(e)}, ensure_ascii=False)
     except TypeError as e:  # wrong or missing arguments
         return json.dumps({"error": f"Bad arguments for {name}: {e}"})
-    return json.dumps(result, ensure_ascii=False, default=str)
+    return result if isinstance(result, str) else json.dumps(result, ensure_ascii=False, default=str)
+
+
+# ---------------------------------------------------------------- token estimates
+TOKENIZER_ID = os.getenv("AGENT_TOKENIZER", "Qwen/Qwen3-0.6B")  # an open tokenizer (a few MB, no model weights)
+_tokenizer: Any = None
+
+
+def count_tokens(obj: Any) -> int:
+    """Estimate the tokens of a string, or of any JSON-able object as it would be serialized into a request.
+
+    Uses an open LLM tokenizer from the Hugging Face Hub (downloaded once); offline it falls back to chars / 3.5.
+    Every model's tokenizer differs, so use this to compare parts of one request, and `usage` for exact counts.
+    """
+    global _tokenizer
+    text = obj if isinstance(obj, str) else json.dumps(obj, ensure_ascii=False, default=str)
+    if _tokenizer is None:
+        try:
+            from tokenizers import Tokenizer
+
+            _tokenizer = Tokenizer.from_pretrained(TOKENIZER_ID)
+        except Exception:  # noqa: BLE001 - offline or blocked: estimate
+            _tokenizer = False
+    return len(_tokenizer.encode(text).ids) if _tokenizer else round(len(text) / 3.5)
+
+
+# ---------------------------------------------------------------- MCP: use a server's tools from a sync loop
+class MCPBridge:
+    """Run an MCP client on a background event loop so the synchronous `run_agent` loop can call MCP tools.
+
+    `server` is anything `mcp.Client` accepts: an `MCPServer` object (in-process), `StdioServerParameters`
+    (launch a subprocess, e.g. `uv run madar_mcp.py`) or a Streamable HTTP URL.
+
+        with MCPBridge(server) as mcp:
+            mcp.list_tools()               # mcp.types.Tool objects
+            mcp.call("compute_fee", {...})  # CallToolResult
+            tools = mcp.agent_tools()       # callables for run_agent
+    """
+
+    def __init__(self, server: Any, **client_kw):
+        self.server, self.client_kw = server, client_kw
+
+    def __enter__(self) -> "MCPBridge":
+        import asyncio
+        import threading
+
+        from concurrent.futures import FIRST_COMPLETED, Future, wait
+
+        self.loop = asyncio.new_event_loop()
+        self.thread = threading.Thread(target=self.loop.run_forever, daemon=True)
+        self.thread.start()
+        ready: Future = Future()
+        # one long-lived task opens and closes the client (anyio scopes must exit in the task that entered them)
+        self._main = asyncio.run_coroutine_threadsafe(self._session(ready), self.loop)
+        wait([ready, self._main], timeout=120, return_when=FIRST_COMPLETED)
+        if not ready.done():
+            self._stop_loop()
+            self._main.result(0) if self._main.done() else None  # re-raise the connection error, if any
+            raise TimeoutError("MCP server did not start within 120 s")
+        self.client = ready.result()
+        return self
+
+    async def _session(self, ready) -> None:
+        import asyncio
+
+        from mcp import Client
+
+        self._closed = asyncio.Event()
+        async with Client(self.server, **self.client_kw) as client:
+            ready.set_result(client)
+            await self._closed.wait()
+
+    def run(self, coro, timeout: float = 120):
+        import asyncio
+
+        return asyncio.run_coroutine_threadsafe(coro, self.loop).result(timeout)
+
+    def _stop_loop(self) -> None:
+        self.loop.call_soon_threadsafe(self.loop.stop)
+        self.thread.join(timeout=5)
+
+    def __exit__(self, *exc) -> None:
+        try:
+            self.loop.call_soon_threadsafe(self._closed.set)
+            self._main.result(30)
+        finally:
+            self._stop_loop()
+
+    open = __enter__  # notebooks: `mcp = MCPBridge(server).open()` … `mcp.close()`
+
+    def close(self) -> None:
+        self.__exit__(None, None, None)
+
+    def list_tools(self) -> list:
+        return self.run(self.client.list_tools()).tools
+
+    def call(self, name: str, arguments: dict) -> Any:
+        return self.run(self.client.call_tool(name, arguments))
+
+    def __getattr__(self, name: str):  # list_resources, read_resource, list_prompts, get_prompt, ... (sync)
+        attr = getattr(self.client, name)
+        return (lambda *a, **kw: self.run(attr(*a, **kw))) if callable(attr) else attr
+
+    def agent_tools(self) -> list[Callable]:
+        """Each MCP tool as a callable with `__tool_schema__`, usable in `run_agent` and `tool_schema`."""
+        return [mcp_to_tool(t, self.call) for t in self.list_tools()]
+
+
+def mcp_result_text(result: Any) -> str:
+    """The text an agent should see for an MCP CallToolResult (errors are prefixed so the loop flags them)."""
+    text = "\n".join(getattr(c, "text", "") or "" for c in result.content)
+    return json.dumps({"error": text}, ensure_ascii=False) if result.is_error else text
+
+
+def mcp_to_tool(tool: Any, call: Callable[[str, dict], Any]) -> Callable:
+    """Wrap one MCP tool definition as a Python callable the agent loop can use."""
+
+    def fn(**arguments):
+        return mcp_result_text(call(tool.name, arguments))
+
+    fn.__name__ = tool.name
+    fn.__doc__ = tool.description or ""
+    fn.__tool_schema__ = {"name": tool.name, "description": (tool.description or "").split("\nArgs:")[0].strip(),
+                          "parameters": tool.input_schema}
+    return fn
 
 
 # ---------------------------------------------------------------- lab utilities
