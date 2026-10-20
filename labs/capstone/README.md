@@ -1,7 +1,7 @@
 # Capstone · Agentic AI Systems Engineering
 
 Day 5 is yours: you present a working agent system that you designed, built, measured and secured. Pick a track on
-Day 4, plan it tonight, build in the morning, present in the afternoon.
+Day 4, build it that evening, polish it in Day 5's first session, and present.
 
 ## Tracks
 
@@ -68,9 +68,9 @@ response cache makes re-runs of unchanged requests free.
 | When | What |
 |---|---|
 | Day 4, end of Session 4 | pick a track; write the one-paragraph pitch and three example tasks |
-| Day 4, evening | copy `TEMPLATE_README.md` to your project as `README.md`; fill in the problem, tools and trifecta; write 15 tasks |
-| Day 5, morning | build; run the eval on configuration A; analyse failures; change one thing (B); re-run; try one attack |
-| Day 5, afternoon | 8 minutes talk + live demo, 4 minutes Q&A, peer feedback |
+| Day 4, evening | copy `TEMPLATE_README.md` to your project as `README.md`; fill in the problem, tools and trifecta; write 15 tasks; build; run the eval on configuration A; analyse failures; change one thing (B); re-run; try one attack |
+| Day 5, Session 1 | final prep: re-run both evals, rehearse, record a demo backup, clean-clone test |
+| Day 5, Sessions 2–4 | 8 minutes talk + live demo, 4 minutes Q&A, peer feedback |
 
 ## Presentation (8 minutes)
 

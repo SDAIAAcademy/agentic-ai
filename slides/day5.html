@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 5 · Agentic AI Systems Engineering</title>
+<link rel="icon" href="../assets/img/academy.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/deck.css">
+</head>
+<body>
+<div class="deck" data-day="Day 5" data-course="Agentic AI Systems Engineering">
+
+<!-- ======================= OPENING ======================= -->
+<section class="slide title" data-label="Welcome">
+  <div class="kicker">SDAIA Academy · Agentic AI Systems Engineering · <span class="ar">هندسة أنظمة الذكاء الاصطناعي التوكيلي</span></div>
+  <h1>Capstone Project Presentations</h1>
+  <p class="lead mt">Day 5: demonstrate, measure and defend a working agent system</p>
+  <div class="meta">
+    <span class="track">AI Engineering Track</span>
+    <span>Day 5 of 5</span>
+    <span>Final prep · live demos · technical Q&amp;A · peer review</span>
+  </div>
+</section>
+
+<section class="slide" data-label="Agenda">
+  <div class="kicker">Today</div>
+  <h2>Day 5 agenda</h2>
+  <div class="agenda">
+    <div class="item"><span><b>Session 1 · Expectations + final prep</b><small>How you're scored (15'), then re-run your eval, rehearse, record a demo backup</small></span><span class="d">50 min</span></div>
+    <div class="item brk"><span>Break</span><span class="d">10 min</span></div>
+    <div class="item"><span><b>Session 2 · Presentations</b><small>Presenters 1–4</small></span><span class="d">50 min</span></div>
+    <div class="item brk"><span>Long break</span><span class="d">20 min</span></div>
+    <div class="item"><span><b>Session 3 · Presentations</b><small>Presenters 5–8</small></span><span class="d">50 min</span></div>
+    <div class="item brk"><span>Break</span><span class="d">10 min</span></div>
+    <div class="item"><span><b>Session 4 · Final presentations + review</b><small>Presenters 9–11, peer feedback, instructor review, closing</small></span><span class="d">50 min</span></div>
+  </div>
+  <aside class="notes">12 minutes per presenter (8 talk + demo, 4 Q&amp;A) fits 11 presenters or pairs. With fewer, give Session 1 more prep time or extend Q&amp;A; with more, cut Q&amp;A to 3 minutes.</aside>
+</section>
+
+<!-- ======================= SESSION 1 ======================= -->
+<section class="slide section" data-session="Session 1 · Expectations + final prep">
+  <div class="kicker">Session 1</div>
+  <h1>Expectations &amp; final prep</h1>
+  <ul class="bullets outcomes tight">
+    <li>How each presentation runs and how it's scored</li>
+    <li>What strong answers to technical questions look like</li>
+    <li>A checklist for the last 35 minutes of preparation</li>
+  </ul>
+  <div class="sess-no">01</div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Format</div>
+  <h2>12 minutes per presenter</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><div class="big" style="color:var(--teal)">8'</div><h4 class="mt-s">Talk + live demo</h4><p class="small mb0">One multi-step task end to end, including an approval. Then your eval numbers and your attack.</p></div>
+    <div class="card c-coral"><div class="big" style="color:var(--coral)">4'</div><h4 class="mt-s">Technical Q&amp;A</h4><p class="small mb0">Instructor first, then the room. Answer with evidence: a trace, an eval row, a guard that fired.</p></div>
+    <div class="card c-navy"><div class="big">↻</div><h4 class="mt-s">Changeover</h4><p class="small mb0">Next presenter connects during Q&amp;A: terminal open, server running, key loaded.</p></div>
+  </div>
+  <div class="callout warn mt small"><b>Free models get rate-limited.</b> If the live run stalls for more than 20 seconds, switch to your <b>recorded backup</b> and keep talking. The cache helps: run your demo once before you present.</div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Suggested structure</div>
+  <h2>Five parts in eight minutes</h2>
+  <div class="cols cols-2">
+    <ol class="bullets small">
+      <li><b>Problem and user</b> (1'): who asks what, and what "done" looks like</li>
+      <li><b>Live demo</b> (2'): one multi-step task with tools, and an approval</li>
+      <li><b>Design across the ladder</b> (2'): prompt, context, harness, loop, graph; which rungs you needed and why</li>
+    </ol>
+    <ol class="bullets small" start="4">
+      <li><b>Evals</b> (2'): A vs. B on 15+ tasks; the biggest failure category; what flipped</li>
+      <li><b>Security</b> (1'): your trifecta, one attack, the defence that stopped it, in code</li>
+    </ol>
+  </div>
+  <div class="ladder s mt">
+    <div class="rung c-teal on"><b>Prompt</b>spec, tools</div>
+    <div class="rung c-cyan on"><b>Context</b>memory, retrieval, MCP</div>
+    <div class="rung c-coral on"><b>Harness</b>permissions, budgets</div>
+    <div class="rung c-amber on"><b>Loop</b>exits, evals</div>
+    <div class="rung c-purple on"><b>Graph</b>gates, checkpoints</div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Scoring guide</div>
+  <h2>What each criterion looks like at its best</h2>
+  <table class="t small">
+    <tr><th>Criterion</th><th class="num">Weight</th><th>Strong evidence</th></tr>
+    <tr><td>Working system and live demo</td><td class="num">25%</td><td>A multi-step task with 3+ tools (one over MCP) runs live from a clean start; an approval is shown</td></tr>
+    <tr><td>Context and harness engineering</td><td class="num">25%</td><td>A spec or AGENTS.md, memory or retrieval, a compaction or budget rule; permissions and budgets; each choice justified</td></tr>
+    <tr><td>Evaluation and error analysis</td><td class="num">20%</td><td>15+ tasks with automatic graders, two configurations, root causes counted, one change explained by the data</td></tr>
+    <tr><td>Security, governance and operability</td><td class="num">20%</td><td>Trifecta mapped; an attack that worked before the defence and not after; defence enforced in code; PDPL considered; traces or logs</td></tr>
+    <tr><td>Presentation and reproducibility</td><td class="num">10%</td><td>On time; the README lets a stranger run it with <code>uv run</code> and a key</td></tr>
+  </table>
+</section>
+
+<section class="slide">
+  <div class="kicker">Technical Q&amp;A</div>
+  <h2>Questions you should be ready for</h2>
+  <div class="cols cols-2">
+    <ul class="bullets small">
+      <li>Why an agent here and not a workflow (or the reverse)?</li>
+      <li>What's in the context on turn 10? How many tokens, and what did you cut?</li>
+      <li>Which tool call would you least like the model to get wrong? What stops it?</li>
+      <li>Your pass rate went from A to B. Is that difference bigger than the noise? What's pass^k?</li>
+    </ul>
+    <ul class="bullets small">
+      <li>Show me an injection that worked before your defence. Does the defence depend on the model?</li>
+      <li>Where does personal data go: which provider, which country, which logs?</li>
+      <li>What happens when the free model disappears tomorrow?</li>
+      <li>What does one conversation cost at 1,000 users a day?</li>
+    </ul>
+  </div>
+  <div class="callout tip mt small"><b>Great answers</b> point to a trace, an eval row, a line of the harness or a test. "We didn't handle that, and here's how we would" is a fine answer too.</div>
+</section>
+
+<section class="slide">
+  <div class="kicker">The next 35 minutes</div>
+  <h2>Final prep checklist</h2>
+  <div class="cols cols-2">
+    <ul class="checklist">
+      <li>Re-run your eval on A and B; paste the table into your README</li>
+      <li>Run the demo once (warms the response cache); time it</li>
+      <li>Record a 2-minute screen capture as a backup</li>
+      <li>Re-run your attack against the defended version</li>
+    </ul>
+    <ul class="checklist">
+      <li>Clean-clone test: does <code>uv run</code> work from the README alone?</li>
+      <li>No keys in the repository; <code>.env</code> is ignored</li>
+      <li>Slides: problem, demo, ladder, evals, security</li>
+      <li>Tell the instructor if you'll present as a pair</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Peer feedback</div>
+  <h2>Give feedback that helps: 1 · 1 · 1</h2>
+  <div class="cols cols-3">
+    <div class="card c-teal"><h4>One strength</h4><p class="small mb0">Be specific: "Blocking the email in the harness, not the prompt, made the defence convincing."</p></div>
+    <div class="card c-cyan"><h4>One question</h4><p class="small mb0">Something you genuinely want to know about their choices or trade-offs.</p></div>
+    <div class="card c-coral"><h4>One suggestion</h4><p class="small mb0">A concrete next step: "Add pass^3 on the five action tasks before trusting the 80%."</p></div>
+  </div>
+  <div class="callout note mt small">Write feedback for each presenter on the shared form while they present. It's shared with them after the session.</div>
+</section>
+
+<section class="slide order" data-label="Running order">
+  <div class="kicker">Running order</div>
+  <h2>Presenters and time slots</h2>
+  <div class="cols cols-2">
+    <table class="t small">
+      <tr><th>#</th><th>Session</th><th>Presenter(s)</th><th>Track</th></tr>
+      <tr><td>1</td><td>Session 2</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+      <tr><td>2</td><td>Session 2</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+      <tr><td>3</td><td>Session 2</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+      <tr><td>4</td><td>Session 2</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+      <tr><td>5</td><td>Session 3</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+      <tr><td>6</td><td>Session 3</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+    </table>
+    <table class="t small">
+      <tr><th>#</th><th>Session</th><th>Presenter(s)</th><th>Track</th></tr>
+      <tr><td>7</td><td>Session 3</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+      <tr><td>8</td><td>Session 3</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+      <tr><td>9</td><td>Session 4</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+      <tr><td>10</td><td>Session 4</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+      <tr><td>11</td><td>Session 4</td><td><input placeholder="Name"></td><td><input placeholder="Track"></td></tr>
+    </table>
+  </div>
+  <p class="xsmall muted mt">Click a cell to type names before the session. They stay until the page is reloaded.</p>
+</section>
+
+<section class="slide break" data-label="Break">
+  <div class="kicker">Break</div>
+  <h1>10-minute break</h1>
+  <div class="timer" data-minutes="10"></div>
+  <p class="lead">Next: Session 2 · Presentations 1–4</p>
+</section>
+
+<!-- ======================= SESSION 2 ======================= -->
+<section class="slide section" data-session="Session 2 · Presentations">
+  <div class="kicker">Session 2</div>
+  <h1>Presentations 1–4</h1>
+  <div class="sess-no">02</div>
+</section>
+
+<section class="slide dark presenting" data-label="Presentations">
+  <div class="kicker">Now presenting</div>
+  <div class="center"><input value="Presenter" aria-label="Presenter"></div>
+  <div class="timers mt">
+    <div><h3>Talk + demo</h3><div class="timer" data-minutes="8"></div></div>
+    <div><h3>Q&amp;A</h3><div class="timer" data-minutes="4"></div></div>
+  </div>
+  <aside class="notes">T starts or pauses the talk timer; use the buttons for the Q&amp;A timer. Reset both between presenters. Signal at 3 minutes and 1 minute left.</aside>
+</section>
+
+<section class="slide break" data-label="Break">
+  <div class="kicker">Long break</div>
+  <h1>20-minute break</h1>
+  <div class="timer" data-minutes="20"></div>
+  <p class="lead">Next: Session 3 · Presentations 5–8</p>
+</section>
+
+<!-- ======================= SESSION 3 ======================= -->
+<section class="slide section" data-session="Session 3 · Presentations">
+  <div class="kicker">Session 3</div>
+  <h1>Presentations 5–8</h1>
+  <div class="sess-no">03</div>
+</section>
+
+<section class="slide dark presenting" data-label="Presentations">
+  <div class="kicker">Now presenting</div>
+  <div class="center"><input value="Presenter" aria-label="Presenter"></div>
+  <div class="timers mt">
+    <div><h3>Talk + demo</h3><div class="timer" data-minutes="8"></div></div>
+    <div><h3>Q&amp;A</h3><div class="timer" data-minutes="4"></div></div>
+  </div>
+</section>
+
+<section class="slide break" data-label="Break">
+  <div class="kicker">Break</div>
+  <h1>10-minute break</h1>
+  <div class="timer" data-minutes="10"></div>
+  <p class="lead">Next: Session 4 · Final presentations &amp; review</p>
+</section>
+
+<!-- ======================= SESSION 4 ======================= -->
+<section class="slide section" data-session="Session 4 · Review & closing">
+  <div class="kicker">Session 4</div>
+  <h1>Final presentations, review &amp; closing</h1>
+  <ul class="bullets outcomes tight">
+    <li>Presentations 9–11</li>
+    <li>Peer feedback and instructor review</li>
+    <li>Lessons learned and where to go next</li>
+  </ul>
+  <div class="sess-no">04</div>
+</section>
+
+<section class="slide dark presenting" data-label="Presentations">
+  <div class="kicker">Now presenting</div>
+  <div class="center"><input value="Presenter" aria-label="Presenter"></div>
+  <div class="timers mt">
+    <div><h3>Talk + demo</h3><div class="timer" data-minutes="8"></div></div>
+    <div><h3>Q&amp;A</h3><div class="timer" data-minutes="4"></div></div>
+  </div>
+</section>
+
+<section class="slide" data-label="Review">
+  <div class="kicker">Instructor review</div>
+  <h2>Patterns across projects</h2>
+  <div class="cols cols-2">
+    <div class="card c-teal"><h4>What worked</h4>
+      <ul class="small"><li>Starting from the eval tasks, then building</li><li>Rules in code, judgement in the model</li><li>Defences that block in the harness, shown with a trace</li><li>One change between A and B, explained by the failures</li></ul></div>
+    <div class="card c-coral"><h4>What to watch</h4>
+      <ul class="small"><li>Twenty tools where five would do</li><li>"The model will follow the system prompt" as a security plan</li><li>Scores without transcripts, or one trial reported as reliability</li><li>Demos that only work with a warm cache on the presenter's laptop</li></ul></div>
+  </div>
+  <aside class="notes">Adapt this slide live: replace the bullets with specific observations from today's presentations during the last break.</aside>
+</section>
+
+<section class="slide" data-label="Recap">
+  <div class="kicker">The whole week</div>
+  <h2>From a model call to a governed agent system</h2>
+  <div class="flow">
+    <div class="step c-teal"><b>Prompt</b>three API shapes, tools, the loop</div>
+    <div class="arrow">→</div>
+    <div class="step c-cyan"><b>Context</b>budgets, retrieval, memory, skills, MCP</div>
+    <div class="arrow">→</div>
+    <div class="step c-coral"><b>Harness</b>Pi, OpenClaw, Hermes, SDKs, controls</div>
+    <div class="arrow">→</div>
+    <div class="step c-amber"><b>Loop</b>Ralph, back-pressure, evals</div>
+    <div class="arrow">→</div>
+    <div class="step c-purple"><b>Graph</b>gates, checkpoints, many agents</div>
+    <div class="arrow">→</div>
+    <div class="step c-navy"><b>Production</b>security, traces, CI</div>
+  </div>
+  <table class="t small mt">
+    <tr><th>If you need…</th><th>Start with…</th></tr>
+    <tr><td>One answer from text</td><td>a single call with structured output; no agent</td></tr>
+    <tr><td>A known process with decisions</td><td>a graph with model nodes, a human gate and checkpoints</td></tr>
+    <tr><td>Open-ended work with a few tools</td><td>the loop (or an SDK) with permissions, budgets and an eval</td></tr>
+    <tr><td>Long work with an oracle (tests)</td><td>an outer loop with fresh context, progress files and exits</td></tr>
+    <tr><td>Untrusted input and private data</td><td>cut a trifecta leg; enforce egress in code; red-team it</td></tr>
+  </table>
+</section>
+
+<section class="slide" data-label="What next">
+  <div class="kicker">Keep going</div>
+  <h2>Where to go from here</h2>
+  <div class="cols cols-4 gap-s">
+    <div class="card c-amber"><h4>Coding agents</h4><p class="small mb0">Claude Code, Codex, Pi, OpenCode: harness design from the user's side</p></div>
+    <div class="card c-amber"><h4>Agent evaluation</h4><p class="small mb0">Larger suites, judge calibration, τ²-bench and Terminal-Bench methods</p></div>
+    <div class="card c-amber"><h4>Agent security</h4><p class="small mb0">OWASP agentic guidance, sandboxing, CaMeL-style designs</p></div>
+    <div class="card c-amber"><h4>Open models</h4><p class="small mb0">Serving Qwen and Gemma with vLLM or SGLang behind the same three API shapes</p></div>
+  </div>
+  <div class="cols cols-2 mt">
+    <div class="callout tip small"><b>This week:</b> push your capstone repository, add the eval table and the security note, and write a short post on one thing that surprised you.</div>
+    <div class="callout note small"><b>Keep reading:</b> Anthropic's engineering blog, OpenAI's agent guides, Simon Willison's weblog, the MCP and A2A specs, and artificialanalysis.ai for model choice.</div>
+  </div>
+</section>
+
+<section class="slide dark" data-label="Thank you">
+  <div class="kicker">Agentic AI Systems Engineering · SDAIA Academy</div>
+  <h1>Thank you</h1>
+  <p class="lead mt">Please complete the course feedback survey before you leave. It directly shapes the next cohort.</p>
+  <div class="cols cols-3 mt">
+    <div class="card c-teal"><h4>Survey</h4><p class="small mb0">Link shared in the course channel</p></div>
+    <div class="card c-cyan"><h4>Certificates</h4><p class="small mb0">Issued after capstone submission is confirmed</p></div>
+    <div class="card c-coral"><h4>Stay in touch</h4><p class="small mb0">Course channel stays open for capstone follow-ups</p></div>
+  </div>
+</section>
+
+</div>
+<script src="../assets/logo.js"></script>
+<script src="../assets/deck.js"></script>
+</body>
+</html>
