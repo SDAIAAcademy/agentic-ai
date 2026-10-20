@@ -1,0 +1,261 @@
+# %% [markdown]
+# # Lab 1.3 · Rafeeq's first tools, three ways
+#
+# Day 1 · Session 3 (The Anthropic Messages API and tool design) · 35 min. The **Messages** API is Anthropic's shape,
+# and many engines serve it too (vLLM, SGLang, llama.cpp, Ollama, LM Studio, LiteLLM, OpenRouter), so coding agents
+# built for Claude can run on open models. In this lab you:
+# - call a free model through the `anthropic` SDK and read its **content blocks** and `stop_reason`;
+# - turn Python functions into tool definitions for all three API shapes;
+# - do one full tool round trip **by hand**: `tool_use` → run the function → `tool_result` → answer;
+# - measure how much a tool's **name, parameters and description** change the agent's accuracy.
+#
+# **Tasks**
+# - [ ] 1 · Messages basics: blocks and stop reasons (6')
+# - [ ] 2 · One function, three tool schemas (8')
+# - [ ] 3 · A tool round trip by hand (10')
+# - [ ] 4 · Tool design, measured (10')
+# - [ ] ✱ Stretch · Parallel tool calls
+
+# %%
+import os, sys, subprocess
+from pathlib import Path
+
+IN_COLAB = "google.colab" in sys.modules
+if IN_COLAB:
+    REPO_URL = "https://github.com/SDAIAAcademy/agentic-ai.git"
+    if not Path("/content/agentic-ai").exists():
+        subprocess.run(["git", "clone", "-q", REPO_URL, "/content/agentic-ai"], check=True)
+    os.chdir("/content/agentic-ai/labs")
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-r", "requirements-colab.txt"], check=True)
+else:
+    while not Path("agentkit.py").exists() and Path.cwd() != Path.cwd().parent:
+        os.chdir("..")  # solutions/ notebooks run from labs/
+sys.path.insert(0, os.getcwd())
+
+import agentkit as K
+print("provider:", K.PROVIDER, "| model:", K.MODEL, "| cache:", K.USE_CACHE)
+
+# %%
+import json
+
+import pandas as pd
+from anthropic.types import Message
+
+import madar
+
+claude_shape = K.anthropic_client()  # the anthropic SDK, pointed at OpenRouter's Anthropic-compatible endpoint
+m = madar.Madar(K.lab_dir("D1_3", reset=True))
+
+
+def messages(**req) -> Message:
+    """client.messages.create, cached on disk and recorded in K.LEDGER."""
+    req.setdefault("model", K.MODEL)
+    req.setdefault("max_tokens", 2048)
+    data, hit = K.cached_call("messages", dict(provider=K.PROVIDER, shape="messages", **req),
+                              lambda: claude_shape.messages.create(**req))
+    msg = K.rebuild(Message, data)
+    K.LEDGER.add(msg.usage, cached=hit)
+    return msg
+
+# %% [markdown]
+# ## 1 · Messages basics: blocks and stop reasons (6')
+#
+# Three differences from Chat Completions catch everyone once:
+# - `system` is a **top-level parameter**, not a message;
+# - `max_tokens` is **required**;
+# - the reply is a list of **content blocks** (`text`, `tool_use`, `thinking`, …), and `stop_reason` says why it
+#   stopped: `end_turn`, `tool_use`, `max_tokens`, `stop_sequence`, `pause_turn` or `refusal`.
+#
+# ✏️ **Exercise** · Send "What documents does a building permit need? Two bullet points." with the system prompt
+# `madar.SYSTEM_PROMPT` and store the reply in `msg`. Then send the same request with `max_tokens=20` as `short`.
+
+# %%
+# BEGIN SOLUTION
+msg = messages(system=madar.SYSTEM_PROMPT,
+               messages=[{"role": "user", "content": "What documents does a building permit need? Two bullet points."}])
+short = messages(system=madar.SYSTEM_PROMPT, max_tokens=20,
+                 messages=[{"role": "user", "content": "What documents does a building permit need? Two bullet points."}])
+# END SOLUTION
+print([b.type for b in msg.content], "| stop_reason:", msg.stop_reason, "| usage:", msg.usage)
+print(K.text_of(msg)[:400])
+print("\nshort:", [b.type for b in short.content], "| stop_reason:", short.stop_reason)
+K.check(short.stop_reason == "max_tokens", "a cut-off reply says so in stop_reason")
+
+# %% [markdown]
+# 🔍 An agent loop must check `stop_reason` (or `finish_reason`) **before** acting: a `tool_use` block in a reply that
+# stopped at `max_tokens` can have truncated arguments.
+#
+# Features you will meet later that exist **only** in the Messages shape (some engines implement a subset):
+#
+# | Feature | What it does | Day |
+# |---|---|---|
+# | `cache_control` breakpoints | cache a long prefix (system prompt, tools, documents); later calls read it at a fraction of the price | 2 |
+# | `thinking` blocks with signatures | reasoning you must pass back unchanged in the next turn | 2 |
+# | strict tools, `output_config.format` | constrained tool inputs and JSON output | 1, 3 |
+# | server tools, MCP connector | web search, code execution, remote MCP servers run by the API | 2 |
+# | memory tool, context editing, compaction | the API manages a long-running agent's context | 2 |
+
+# %% [markdown]
+# ## 2 · One function, three tool schemas (8')
+#
+# A tool is a name, a description and a JSON Schema for the arguments. The three shapes wrap the same three things
+# differently. In this course, tools are plain Python methods with type hints and a Google-style docstring; the JSON
+# Schema comes from the type hints (Pydantic does the work).
+
+# %%
+params = K.json_schema_for(m.compute_fee)
+description = K._parse_doc(m.compute_fee)[0]  # the docstring before "Args:"
+print(description)
+print(json.dumps(params, indent=1)[:700], "…")
+
+# %% [markdown]
+# ✏️ **Exercise** · Write `to_chat`, `to_responses` and `to_anthropic`. Each takes `(name, description, params)` and
+# returns the tool definition for that API. The check compares them with `K.tool_schema`.
+
+# %%
+# BEGIN SOLUTION
+def to_chat(name: str, description: str, params: dict) -> dict:
+    return {"type": "function", "function": {"name": name, "description": description, "parameters": params}}
+
+
+def to_responses(name: str, description: str, params: dict) -> dict:
+    return {"type": "function", "name": name, "description": description, "parameters": params}
+
+
+def to_anthropic(name: str, description: str, params: dict) -> dict:
+    return {"name": name, "description": description, "input_schema": params}
+# END SOLUTION
+
+
+for fn, shape in [(to_chat, "chat"), (to_responses, "responses"), (to_anthropic, "anthropic")]:
+    mine = fn("compute_fee", description, params)
+    K.check(mine == K.tool_schema(m.compute_fee, shape), f"{shape} tool schema")
+print(json.dumps(K.tool_schema(m.compute_fee, "anthropic"), ensure_ascii=False)[:300], "…")
+
+# %% [markdown]
+# ## 3 · A tool round trip by hand (10')
+#
+# Sara writes: *"What is the status of REN-10482? My national ID ends with 4821 and my mobile is 0501234821."*
+# One round trip in the Messages shape:
+#
+# 1. send `messages=[user]` with `tools=[get_permit]` → the reply has a `tool_use` block, `stop_reason="tool_use"`;
+# 2. append the assistant reply **as is** (all its blocks) to `messages`;
+# 3. run the function with `block.input`;
+# 4. append **one user message** whose content is a `tool_result` block with the same `tool_use_id`;
+# 5. call again → the final answer.
+#
+# ✏️ **Exercise** · Implement the five steps. Store the final reply in `final`.
+
+# %%
+SARA = "What is the status of REN-10482? My national ID ends with 4821 and my mobile is 0501234821."
+tools = [K.tool_schema(m.get_permit, "anthropic")]
+convo = [{"role": "user", "content": SARA}]
+# BEGIN SOLUTION
+first = messages(system=madar.SYSTEM_PROMPT, messages=convo, tools=tools)
+print("1 →", first.stop_reason, [b.type for b in first.content])
+convo.append({"role": "assistant", "content": [b.model_dump(exclude_none=True) for b in first.content]})
+results = []
+for block in first.content:
+    if block.type == "tool_use":
+        print("  tool_use:", block.name, block.input)
+        out = K.call_tool({"get_permit": m.get_permit}, block.name, block.input)
+        results.append({"type": "tool_result", "tool_use_id": block.id, "content": out})
+convo.append({"role": "user", "content": results})
+final = messages(system=madar.SYSTEM_PROMPT, messages=convo, tools=tools)
+# END SOLUTION
+print("2 →", final.stop_reason)
+print(K.text_of(final))
+K.check(first.stop_reason == "tool_use" and final.stop_reason == "end_turn", "tool_use, then end_turn")
+K.check("2026-11-02" in K.text_of(final) or "2 November" in K.text_of(final) or "November 2" in K.text_of(final),
+        "the answer gives the SLA due date (2 Nov 2026)")
+
+# %% [markdown]
+# Print the whole conversation. This list **is** the agent's memory: on the next turn you send all of it again.
+
+# %%
+for turn in convo:
+    blocks = turn["content"] if isinstance(turn["content"], list) else [{"type": "text", "text": turn["content"]}]
+    for b in blocks:
+        body = b.get("text") or b.get("input") or b.get("content")
+        print(f"{turn['role']:9s} [{b['type']}] {str(body)[:110]}")
+
+# %% [markdown]
+# ## 4 · Tool design, measured (10')
+#
+# The model sees **only** the name, the description and the schema. Below are two versions of the same fee
+# calculator: `fee` (what a hurried developer writes) and `m.compute_fee` (named, typed, documented, with an enum for
+# the permit type and units in the descriptions). Both call the same code.
+#
+# ✏️ **Exercise** · For each question in `FEE_QUESTIONS`, run `K.run_agent(question, [tool], ...)` once with `fee`
+# and once with `m.compute_fee` (`max_steps=4`, `verbose=False`). Record whether the right number appears in the
+# final answer and how many tool calls it took.
+
+# %%
+def fee(t: str, a: float = 0, s: bool = False, il: bool = False, d: int = 0, ss: bool = False) -> int:
+    """Fee."""
+    return madar.fee_for(t, a or None, s, a or None, il, d or None, ss)
+
+
+FEE_QUESTIONS = [  # (question, expected SAR) — from POL-02
+    ("How much is the yearly fee for an illuminated shop sign of 3 m²?", "750"),
+    ("كم رسوم رخصة البناء لفيلا مساحتها 420 متر مربع؟", "840"),
+    ("Structural renovation of 35 m² (removing a load-bearing wall): what is the fee?", "335"),
+    ("A 5-day exhibition: how much is the event permit?", "5,000"),
+    ("I receive social security and want to renovate my home's kitchen. What do I pay?", "0"),
+][: K.pick(5, 3)]
+SYSTEM = "You are Madar's fee assistant. Always use the tool to compute fees; never compute them yourself."
+rows = []
+for q, expected in FEE_QUESTIONS:
+    for tool in (fee, m.compute_fee):
+        # BEGIN SOLUTION
+        run = K.run_agent(q, [tool], system=SYSTEM, max_steps=4, verbose=False)
+        answer = run.final.replace("٬", ",")
+        ok = expected in answer or expected.replace(",", "") in answer.replace(",", "")
+        rows.append({"question": q[:45], "tool": tool.__name__, "correct": ok, "tool_calls": len(run.tool_calls),
+                     "stopped": run.stopped, "args": json.dumps(run.tool_calls[0][1] if run.tool_calls else {})[:60]})
+        # END SOLUTION
+design = pd.DataFrame(rows)
+print(design.groupby("tool")[["correct", "tool_calls"]].mean())
+design
+
+# %% [markdown]
+# 🔍 Look at the `args` column for `fee`: what did the model guess `t`, `a` and `d` mean? Tool design rules that this
+# measures (Anthropic's *Writing effective tools for agents* and OpenAI's function-calling guide agree):
+# - **Name** what it does (`compute_fee`, not `fee`); one tool per job.
+# - **Describe** each parameter with units and examples; use **enums** for closed sets.
+# - Return what the model needs next, and **errors it can act on** ("SGN fee needs sign_m2"), not stack traces.
+# - Fewer, better tools beat many thin ones; every tool definition costs context on every call.
+
+# %% [markdown]
+# ## ✱ Stretch · Parallel tool calls
+#
+# Ask about two permits in one message: *"Compare the fees of a 3 m² illuminated sign and a 6 m² plain sign."* Models
+# that support parallel tool use return **two** `tool_use` blocks in one reply. Run both and return **both**
+# `tool_result` blocks in **one** user message (splitting them into two messages teaches the model to stop calling
+# tools in parallel). How many round trips did it take?
+
+# %%
+# BEGIN SOLUTION
+q = "Compare the yearly fees of a 3 m² illuminated sign and a 6 m² plain sign. Use the tool for each."
+tools2 = [K.tool_schema(m.compute_fee, "anthropic")]
+convo2 = [{"role": "user", "content": q}]
+for trip in range(1, 5):
+    reply = messages(system=SYSTEM, messages=convo2, tools=tools2)
+    uses = [b for b in reply.content if b.type == "tool_use"]
+    print(f"round trip {trip}: {len(uses)} tool_use block(s)")
+    if not uses:
+        break
+    convo2.append({"role": "assistant", "content": [b.model_dump(exclude_none=True) for b in reply.content]})
+    convo2.append({"role": "user", "content": [
+        {"type": "tool_result", "tool_use_id": b.id, "content": K.call_tool({"compute_fee": m.compute_fee}, b.name, b.input)}
+        for b in uses]})
+print(K.text_of(reply))
+# END SOLUTION
+
+# %% [markdown]
+# ## Checkpoint
+#
+# 1. Where does the system prompt go in Chat Completions, Responses and Messages?
+# 2. Your loop sees a `tool_use` block and `stop_reason="max_tokens"`. Run the tool or not? Why?
+# 3. Which single change to `fee` would you expect to fix most errors? Check your guess against the `args` column.
+# 4. Why does every `tool_result` of one turn go back in a single user message?
