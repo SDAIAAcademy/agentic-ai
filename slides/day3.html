@@ -389,13 +389,14 @@ async for message in query(
       <ul class="bullets small mb0">
         <li>Agents as stored objects with tools, instructions and versions.</li>
         <li>Runs with sessions, tool approvals and hosted tools, on OpenAI's infrastructure.</li>
-        <li>Successor path for Assistants (shut down Aug 2026) and Agent Builder (shuts down Nov 2026).</li>
+        <li>Successor to Assistants (shut down Aug 2026) and Agent Builder (Nov 2026).</li>
       </ul></div>
     <div class="card c-coral"><h4>Claude Managed Agents (beta, Apr 2026)</h4>
       <ul class="bullets small mb0">
         <li>Anthropic runs the loop <b>and</b> a per-session container where tools execute.</li>
         <li>Versioned agent configs, sessions with an event stream, skills and MCP.</li>
-        <li>Vaults keep credentials out of the sandbox; outcomes let a grader iterate the agent against a rubric; scheduled deployments.</li>
+        <li>Vaults keep credentials out of the sandbox; outcomes grade the agent against a rubric; schedules.</li>
+        <li>Sessions are stored by Anthropic: not eligible for ZDR (<a href="https://platform.claude.com/docs/en/managed-agents/overview">overview</a>).</li>
       </ul></div>
   </div>
   <div class="callout warn mt"><b>Questions before you buy:</b> where do sessions, files and logs live (PDPL, data residency)? Can you export traces? Which models can you use? What happens to your agent when the beta changes?</div>

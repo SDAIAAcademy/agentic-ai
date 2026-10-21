@@ -1,7 +1,8 @@
 # %% [markdown]
 # # Lab 1.3 · Rafeeq's first tools, three ways
 #
-# Day 1 · Session 3 (The Anthropic Messages API and tool design) · 25 min. The **Messages** API is Anthropic's shape,
+# Day 1 · Session 3 (The Anthropic Messages API and tool design) · 25 min. The **Messages** API is Anthropic's shape
+# ([Claude API docs](https://platform.claude.com/docs/en/intro)),
 # and many engines serve it too (vLLM, SGLang, llama.cpp, Ollama, LM Studio, LiteLLM, OpenRouter), so coding agents
 # built for Claude can run on open models. In this lab you:
 # - call a free model through the `anthropic` SDK and read its **content blocks** and `stop_reason`;

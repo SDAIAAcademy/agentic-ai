@@ -78,6 +78,10 @@ def respond(**req) -> Response:
 # | Tool result | `{"role": "tool", "tool_call_id", "content"}` | an item `{"type": "function_call_output", "call_id", "output"}` |
 # | Structured output | `response_format={"type": "json_schema", ...}` | `text={"format": {"type": "json_schema", ...}}` |
 # | State | you resend everything | `previous_response_id` / Conversations (on OpenAI), or resend (`store=False`) |
+# | Defaults | functions non-strict | responses **stored** unless `store=False`; functions **strict** unless `"strict": False` |
+#
+# OpenAI's [migration guide](https://developers.openai.com/api/docs/guides/migrate-to-responses) lists the rest. Chat Completions remains supported; Responses is recommended for new
+# work, and the Assistants API it replaced was shut down on 26 August 2026.
 #
 # ✏️ **Exercise** · Ask the same question ("In one sentence: what is a renovation permit?") with the system prompt
 # "Answer in English, in one sentence." through **both** APIs: `cc` with `K.chat(...)` and `rs` with `respond(...)`.
@@ -199,8 +203,10 @@ print(pd.crosstab(res.gold, res.pred))
 # ## 4 · A Decisions-style router (7')
 #
 # Many agent steps are not "write text" but **decide**: is this a prompt injection? which queue? how urgent? OpenAI's
-# **Decisions API** (beta) is built for that: you send an input and a list of typed questions, and get typed answers
-# with probabilities instead of text. This is the request shape (OpenAI-only, paid, **not run here**):
+# **[Decisions API](https://developers.openai.com/api/docs/guides/decisions)** (public beta, `POST /v1/decisions`, model `gpt-6-luna`) is built for that: you send one input
+# (text or images) and a list of independent typed questions, and get typed answers with probabilities instead of
+# text, about 10× faster than a Responses call and billed on input tokens only. This is the request shape (OpenAI-only,
+# paid, **not run here**):
 #
 # ```python
 # decision = openai_client.decisions.create(
@@ -219,8 +225,12 @@ print(pd.crosstab(res.gold, res.pred))
 #                     {"label": "high", "description": "Overdue, or a deadline within three working days"}]},
 #     ],
 # )
-# # answers: predicate → probability; choice → choice, probabilities, confidence; score → score, confidence,
-# # probabilities. Any answer can be a refusal instead.
+# # answers (one per question, matched by name):
+# #   predicate → probability (of yes)
+# #   choice    → choice, probabilities [{value, probability}], confidence
+# #   score     → score (probability-weighted level index from 0, e.g. 1.4), probabilities [{value, label, probability}],
+# #               confidence
+# # Any answer can be a refusal instead. Decisions that depend on each other need separate requests.
 # ```
 #
 # The **idea** is portable: questions with closed answer sets, answered in one structured call. You will emulate it
@@ -229,7 +239,8 @@ print(pd.crosstab(res.gold, res.pred))
 # ✏️ **Exercise** · Complete `decide(input, questions)`. Build a JSON Schema with one property per question:
 # - predicate → `{"probability": number between 0 and 1}`;
 # - choice → `{"choice": enum of the values, "confidence": number}`;
-# - score → `{"score": enum of the level labels, "confidence": number}`.
+# - score → `{"score": enum of the level labels, "confidence": number}` (simpler than the real API, whose `score` is
+#   a weighted level index computed from per-level probabilities).
 #
 # Put the question instructions, choice descriptions and level descriptions in the `instructions`, call `respond`
 # with `text.format`, and return the parsed dict.

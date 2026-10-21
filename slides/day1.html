@@ -419,7 +419,7 @@ for item in r.output:
     if item.type == "function_call":
         item.name, item.arguments, item.call_id</code></pre>
   </div>
-  <p class="small mt-s">Tool results go back as <code>{"role": "tool", "tool_call_id", "content"}</code> messages in Chat Completions and as <code>{"type": "function_call_output", "call_id", "output"}</code> items in Responses. Note that the Responses tool definition is <b>flat</b>: no nested <code>"function"</code> object.</p>
+  <p class="small mt-s">Tool results go back as <code>{"role": "tool", "tool_call_id", "content"}</code> messages in Chat Completions and as <code>{"type": "function_call_output", "call_id", "output"}</code> items in Responses. The Responses tool definition is <b>flat</b>. Defaults differ too: Responses <b>stores</b> responses unless <code>store=False</code>, and tries <b>strict</b> function schemas unless <code>"strict": False</code>. Chat Completions stays supported; OpenAI recommends Responses for new work (<a href="https://developers.openai.com/api/docs/guides/migrate-to-responses">migration guide</a>).</p>
 </section>
 
 <section class="slide" data-label="Structured output">
@@ -530,7 +530,7 @@ r = client.responses.create(model=MODEL, input=history,
 </section>
 
 <section class="slide" data-label="Decisions API">
-  <div class="kicker">OpenAI · beta since October 2026</div>
+  <div class="kicker">OpenAI · public beta, GA expected soon · <a href="https://developers.openai.com/api/docs/guides/decisions">guide</a></div>
   <h2>The Decisions API: typed answers instead of text</h2>
   <div class="cols cols-2">
     <pre class="code s" data-file="reference only · OpenAI, paid"><code class="language-python">d = openai_client.decisions.create(
@@ -552,13 +552,13 @@ r = client.responses.create(model=MODEL, input=history,
         <tr><th>Question</th><th>Answer carries</th></tr>
         <tr><td><code>predicate</code></td><td><code>probability</code> (of yes)</td></tr>
         <tr><td><code>choice</code></td><td><code>choice</code>, <code>probabilities</code>, <code>confidence</code></td></tr>
-        <tr><td><code>score</code></td><td><code>score</code>, <code>probabilities</code>, <code>confidence</code></td></tr>
+        <tr><td><code>score</code></td><td><code>score</code> (probability-weighted level index from 0, e.g. 1.4), <code>probabilities</code>, <code>confidence</code></td></tr>
       </table>
-      <p class="small mt-s">Any answer can be a <code>refusal</code>. Priced on input tokens only ($0.10 per million at launch), because there is no free-text output.</p>
+      <p class="small mt-s">Any answer can be a <code>refusal</code>. One input, many independent questions per call; about 10× faster than Responses; input tokens only ($0.10 per million).</p>
       <div class="callout tip small"><b>The pattern travels.</b> Guards, routers and judges are decisions, not prose. In Lab 1.2 you build <code>decide()</code> with JSON Schema on a free model.</div>
     </div>
   </div>
-  <aside class="notes">Be explicit: we don't call the Decisions API in labs (OpenAI-only, paid). What students take away is the pattern of closed answer sets, several questions per call, and probabilities. Caveat for the emulation: a probability the model writes as text is not calibrated; the hosted API reads it from the model's distribution. Self-consistency or logprobs get closer.</aside>
+  <aside class="notes">Be explicit: we don't call the Decisions API in labs (OpenAI-only, paid). What students take away is the pattern of closed answer sets, several questions per call, and probabilities. Caveat for the emulation: a probability the model writes as text is not calibrated; the hosted API reads it from the model's distribution. Self-consistency or logprobs get closer. Text and image inputs; POST /v1/decisions; ZDR supported; data residency in the US and Europe only, which matters for PDPL. Dependent decisions need separate calls.</aside>
 </section>
 
 <section class="slide" data-label="Timeline">
