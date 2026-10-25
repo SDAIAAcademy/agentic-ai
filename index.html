@@ -36,18 +36,15 @@
   </div>
 
   <h2>Schedule and materials</h2>
-  <p style="color:var(--muted)">Each day: Session 1 → 10' break → Session 2 → 20' break → Session 3 → 10' break → Session 4. Each session is about 20–25 minutes of concepts and demos, then a 25-minute lab. In the slides press <code>F</code> for fullscreen, <code>←</code> <code>→</code> to navigate, <code>N</code> for speaker notes, <code>?</code> for help.</p>
+  <p style="color:var(--muted)">Four sessions a day. Each session is about 20–25 minutes of concepts and demos, then a 25-minute lab. In the slides press <code>F</code> for fullscreen, <code>←</code> <code>→</code> to navigate, <code>N</code> for speaker notes, <code>?</code> for help.</p>
 
   <div class="day">
     <div class="day-head" style="--c:var(--teal)"><div><div class="t">Day 1</div><h3>From Model to Agent: LLM APIs, Tools and the Loop</h3></div><a class="btn" href="slides/day1.html">Open slides →</a></div>
     <div class="scroll"><table>
       <tr><th>Session</th><th>Lab notebook (opens in Colab)</th></tr>
       <tr><td><b>1 · The agentic landscape</b>: agents vs. workflows, the engineering ladder, three API shapes, OpenRouter and HF, reading benchmarks</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_1_two_providers.ipynb">D1_1_two_providers</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>2 · The OpenAI Responses API</b>: items, structured outputs, streaming events, stateless replay, Open Responses, the Decisions pattern</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_2_responses_api.ipynb">D1_2_responses_api</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
       <tr><td><b>3 · The Anthropic Messages API and tool design</b>: content blocks, tool_use / tool_result, thinking, caching, who serves /v1/messages, tools for agents</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_3_messages_and_tools.ipynb">D1_3_messages_and_tools</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>4 · The agent loop from scratch</b>: stop conditions, budgets, errors as observations, traces, one loop over three shapes</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_4_agent_loop.ipynb">D1_4_agent_loop</a></td></tr>
     </table></div>
   </div>
@@ -57,11 +54,8 @@
     <div class="scroll"><table>
       <tr><th>Session</th><th>Lab notebook (opens in Colab)</th></tr>
       <tr><td><b>1 · Context is a budget</b>: context rot, four failures, write/select/compress/isolate, caching, compaction</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_1_context_budget.ipynb">D2_1_context_budget</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>2 · Retrieval for agents</b>: BM25, embeddings, hybrid search, Arabic, agentic search tools</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_2_retrieval.ipynb">D2_2_retrieval</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
       <tr><td><b>3 · Memory, skills and context files</b>: the memory-tool contract, capped memory, AGENTS.md, Agent Skills</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_3_memory_skills.ipynb">D2_3_memory_skills</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>4 · Model Context Protocol</b>: tools, resources, prompts; the stateless 2026-07-28 revision; stdio and HTTP</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D2_4_mcp.ipynb">D2_4_mcp</a></td></tr>
     </table></div>
   </div>
@@ -71,11 +65,8 @@
     <div class="scroll"><table>
       <tr><th>Session</th><th>Lab notebook (opens in Colab)</th></tr>
       <tr><td><b>1 · Anatomy of a harness</b>: guides and sensors; Pi, OpenClaw, Hermes, Mercury; permissions and hooks</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_1_harness_teardown.ipynb">D3_1_harness_teardown</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>2 · Agent SDKs and hosted agents</b>: OpenAI Agents SDK, Claude Agent SDK, Agents API, Managed Agents: build vs. buy</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_2_agents_sdk.ipynb">D3_2_agents_sdk</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
       <tr><td><b>3 · Loop engineering</b>: the Ralph loop, fresh context, progress files, back-pressure, exits</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_3_loop_engineering.ipynb">D3_3_loop_engineering</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>4 · Evaluating agents</b>: graders, LLM judges, pass@k and pass^k, error analysis, traces</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D3_4_evals.ipynb">D3_4_evals</a></td></tr>
     </table></div>
   </div>
@@ -85,11 +76,8 @@
     <div class="scroll"><table>
       <tr><th>Session</th><th>Lab notebook (opens in Colab)</th></tr>
       <tr><td><b>1 · Graph engineering</b>: workflow patterns, LangGraph state and routers, interrupts, checkpoints</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_1_review_graph.ipynb">D4_1_review_graph</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>2 · Multi-agent systems</b>: agents as tools, handoffs, when many agents help, A2A</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_2_multi_agent.ipynb">D4_2_multi_agent</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
       <tr><td><b>3 · Securing agents</b>: OWASP agentic top 10, the lethal trifecta, layered defences, red teaming</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_3_security.ipynb">D4_3_security</a></td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>4 · Agents in production + capstone kickoff</b>: FastAPI, budgets, fallbacks, OpenTelemetry GenAI, CI smoke eval</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D4_4_ship_it.ipynb">D4_4_ship_it</a></td></tr>
     </table></div>
   </div>
@@ -99,11 +87,8 @@
     <div class="scroll"><table>
       <tr><th>Session</th><th>Notes</th></tr>
       <tr><td><b>1 · Expectations + final prep</b></td><td>Scoring (15'), then re-run evals, rehearse, record a backup</td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>2 · Presentations</b></td><td>Presenters 1–4 (8' talk + demo, 4' Q&amp;A)</td></tr>
-      <tr><td class="brk" colspan="2">Break · 20 min</td></tr>
       <tr><td><b>3 · Presentations</b></td><td>Presenters 5–8</td></tr>
-      <tr><td class="brk" colspan="2">Break · 10 min</td></tr>
       <tr><td><b>4 · Final presentations, review &amp; closing</b></td><td>Presenters 9–11, peer feedback, lessons learned</td></tr>
     </table></div>
   </div>

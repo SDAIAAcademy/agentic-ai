@@ -12,7 +12,7 @@
 | 4 | Graph Engineering & Production | [day4](https://sdaiaacademy.github.io/agentic-ai/slides/day4.html) |
 | 5 | Capstone Project Presentations | [day5](https://sdaiaacademy.github.io/agentic-ai/slides/day5.html) |
 
-Each day has four sessions with a short break between them and a longer one at mid-day. Every session is about 20–25 minutes of concepts and demos followed by a 25-minute lab.
+Each day has four sessions. Every session is about 20–25 minutes of concepts and demos followed by a 25-minute lab.
 
 ## How the course is organised
 
