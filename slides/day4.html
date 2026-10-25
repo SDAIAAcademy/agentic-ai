@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Day 4 · Agentic AI Systems Engineering</title>
-<link rel="icon" href="https://sdaiaacademy.github.io/slides/img/academy.svg">
+<link rel="icon" href="https://sdaiaacademy.github.io/slides/icon.svg">
 <link rel="stylesheet" href="https://sdaiaacademy.github.io/slides/deck.css">
 </head>
 <body>
@@ -41,11 +41,8 @@
   <h2>Day 4 schedule</h2>
   <div class="agenda">
     <div class="item"><span><b>Session 1 · Graph engineering</b><small>Workflow patterns as graphs; LangGraph state, routers, interrupts, checkpoints; durable execution</small></span></div>
-    <div class="item brk"><span>Break</span></div>
     <div class="item"><span><b>Session 2 · Multi-agent systems</b><small>When many agents help and when they hurt; agents as tools, handoffs, A2A</small></span></div>
-    <div class="item brk"><span>Long break</span></div>
     <div class="item"><span><b>Session 3 · Securing agents</b><small>OWASP agentic top 10, the lethal trifecta, injection, layered defences, red teaming</small></span></div>
-    <div class="item brk"><span>Break</span></div>
     <div class="item"><span><b>Session 4 · Agents in production + capstone kickoff</b><small>Serving, budgets, fallbacks, traces, CI gates; pick your capstone</small></span></div>
   </div>
 </section>
@@ -193,19 +190,13 @@ graph.get_state_history(cfg)  # every step, for audit</code></pre>
   <div class="kicker">Checkpoint</div>
   <h2>A complete, low-risk application. Should the graph approve it automatically?</h2>
   <div class="opts">
-    <div class="opt" data-k="A">Yes: low risk and complete means approve</div>
-    <div class="opt" data-k="B" data-ok>No: only a licensing officer decides (POL-01). Risk changes how it is presented, not whether a person decides</div>
-    <div class="opt" data-k="C">Only if the model is confident</div>
+    <div class="opt" data-k="A">Only if the model is confident</div>
+    <div class="opt" data-k="B">Yes: low risk and complete means approve</div>
+    <div class="opt" data-k="C" data-ok>No: only a licensing officer decides (POL-01). Risk changes how it is presented, not whether a person decides</div>
   </div>
-  <div class="why callout tip small"><b>B.</b> The graph prepares the decision; a person makes it. Human-only decisions are a policy choice, and the graph makes it impossible to skip.</div>
+  <div class="why callout tip small"><b>C.</b> The graph prepares the decision; a person makes it. Human-only decisions are a policy choice, and the graph makes it impossible to skip.</div>
 </section>
 
-<section class="slide break" data-label="Break">
-  <div class="kicker">Break</div>
-  <h1>10-minute break</h1>
-  <div class="timer" data-minutes="10"></div>
-  <p class="lead">Next: Session 2 · Multi-agent systems</p>
-</section>
 
 <!-- ======================= SESSION 2 ======================= -->
 <section class="slide section" data-session="Session 2 · Multi-agent systems">
@@ -315,19 +306,13 @@ async for r in a2a.send_message(req):
   <div class="kicker">Checkpoint</div>
   <h2>Two workers can both book inspections. A citizen asks to move one. What's the risk?</h2>
   <div class="opts">
-    <div class="opt" data-k="A">None: more agents means more reliability</div>
-    <div class="opt" data-k="B" data-ok>Conflicting or duplicate writes: each worker acts on partial context</div>
-    <div class="opt" data-k="C">Only higher cost</div>
+    <div class="opt" data-k="A" data-ok>Conflicting or duplicate writes: each worker acts on partial context</div>
+    <div class="opt" data-k="B">Only higher cost</div>
+    <div class="opt" data-k="C">None: more agents means more reliability</div>
   </div>
-  <div class="why callout tip small"><b>B.</b> Coupled writes belong to one owner. Parallelise reads; route every write through one agent, one graph node, and one approval.</div>
+  <div class="why callout tip small"><b>A.</b> Coupled writes belong to one owner. Parallelise reads; route every write through one agent, one graph node, and one approval.</div>
 </section>
 
-<section class="slide break" data-label="Long break">
-  <div class="kicker">Break</div>
-  <h1>20-minute break</h1>
-  <div class="timer" data-minutes="20"></div>
-  <p class="lead">Next: Session 3 · Securing agents</p>
-</section>
 
 <!-- ======================= SESSION 3 ======================= -->
 <section class="slide section" data-session="Session 3 · Securing agents">
@@ -462,12 +447,6 @@ async for r in a2a.send_message(req):
   <div class="why callout tip small"><b>B.</b> An injection is designed to win against the prompt. Keep the instruction (it reduces attempts) and add a sensor that blocks the action.</div>
 </section>
 
-<section class="slide break" data-label="Break">
-  <div class="kicker">Break</div>
-  <h1>10-minute break</h1>
-  <div class="timer" data-minutes="10"></div>
-  <p class="lead">Next: Session 4 · Agents in production</p>
-</section>
 
 <!-- ======================= SESSION 4 ======================= -->
 <section class="slide section" data-session="Session 4 · Agents in production">

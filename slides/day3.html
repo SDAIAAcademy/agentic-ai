@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Day 3 · Agentic AI Systems Engineering</title>
-<link rel="icon" href="https://sdaiaacademy.github.io/slides/img/academy.svg">
+<link rel="icon" href="https://sdaiaacademy.github.io/slides/icon.svg">
 <link rel="stylesheet" href="https://sdaiaacademy.github.io/slides/deck.css">
 </head>
 <body>
@@ -41,11 +41,8 @@
   <h2>Day 3 schedule</h2>
   <div class="agenda">
     <div class="item"><span><b>Session 1 · Anatomy of a harness</b><small>Agent = model + harness; guides and sensors; Pi, OpenClaw, Hermes, Mercury taken apart; 2026 incidents</small></span></div>
-    <div class="item brk"><span>Break</span></div>
     <div class="item"><span><b>Session 2 · Agent SDKs and hosted agents</b><small>OpenAI Agents SDK, Claude Agent SDK, OpenAI Agents API, Claude Managed Agents: build vs. buy</small></span></div>
-    <div class="item brk"><span>Long break</span></div>
     <div class="item"><span><b>Session 3 · Loop engineering</b><small>Long-running agents, the Ralph loop, fresh context, progress files, back-pressure, budgets</small></span></div>
-    <div class="item brk"><span>Break</span></div>
     <div class="item"><span><b>Session 4 · Evaluating agents</b><small>Tasks, graders, judges, pass@k and pass^k, error analysis, traces</small></span></div>
   </div>
 </section>
@@ -285,12 +282,6 @@ K.run_agent(task, tools, permission=policy,
   <div class="why callout tip small"><b>B.</b> Approvals catch the unexpected; guards enforce what you already know. The audit log (C) only tells you afterwards.</div>
 </section>
 
-<section class="slide break" data-label="Break">
-  <div class="kicker">Break</div>
-  <h1>10-minute break</h1>
-  <div class="timer" data-minutes="10"></div>
-  <p class="lead">Next: Session 2 · Agent SDKs and hosted agents</p>
-</section>
 
 <!-- ======================= SESSION 2 ======================= -->
 <section class="slide section" data-session="Session 2 · Agent SDKs and hosted agents">
@@ -420,19 +411,13 @@ async for message in query(
   <div class="kicker">Checkpoint</div>
   <h2>An officer approves a refund an hour after Rafeeq asked. What must the system keep in between?</h2>
   <div class="opts">
-    <div class="opt" data-k="A">Nothing: the model will remember the conversation</div>
-    <div class="opt" data-k="B" data-ok>The paused run's state (history, pending call, arguments), stored durably and resumable</div>
-    <div class="opt" data-k="C">Only the refund amount, so it can be re-created</div>
+    <div class="opt" data-k="A">Only the refund amount, so it can be re-created</div>
+    <div class="opt" data-k="B">Nothing: the model will remember the conversation</div>
+    <div class="opt" data-k="C" data-ok>The paused run's state (history, pending call, arguments), stored durably and resumable</div>
   </div>
-  <div class="why callout tip small"><b>B.</b> The model remembers nothing between calls. The SDK serialises a <code>RunState</code>; hosted runtimes keep it for you; tomorrow's graph keeps it in a checkpoint.</div>
+  <div class="why callout tip small"><b>C.</b> The model remembers nothing between calls. The SDK serialises a <code>RunState</code>; hosted runtimes keep it for you; tomorrow's graph keeps it in a checkpoint.</div>
 </section>
 
-<section class="slide break" data-label="Long break">
-  <div class="kicker">Break</div>
-  <h1>20-minute break</h1>
-  <div class="timer" data-minutes="20"></div>
-  <p class="lead">Next: Session 3 · Loop engineering</p>
-</section>
 
 <!-- ======================= SESSION 3 ======================= -->
 <section class="slide section" data-session="Session 3 · Loop engineering">
@@ -543,19 +528,13 @@ async for message in query(
   <div class="kicker">Checkpoint</div>
   <h2>Iterations 3, 4 and 5 all end with 4 failing tests. What should the loop do?</h2>
   <div class="opts">
-    <div class="opt" data-k="A">Keep going: the next iteration might succeed</div>
-    <div class="opt" data-k="B" data-ok>Stop on "no progress", keep the commits, and hand the progress notes to a person</div>
-    <div class="opt" data-k="C">Delete the four failing tests so the next iteration can finish</div>
+    <div class="opt" data-k="A" data-ok>Stop on "no progress", keep the commits, and hand the progress notes to a person</div>
+    <div class="opt" data-k="B">Delete the four failing tests so the next iteration can finish</div>
+    <div class="opt" data-k="C">Keep going: the next iteration might succeed</div>
   </div>
-  <div class="why callout tip small"><b>B.</b> A stalled loop spends money to stay stuck. The notes and commits make the hand-off cheap. (C) is the failure the test guard exists to prevent.</div>
+  <div class="why callout tip small"><b>A.</b> A stalled loop spends money to stay stuck. The notes and commits make the hand-off cheap. (B) is the failure the test guard exists to prevent.</div>
 </section>
 
-<section class="slide break" data-label="Break">
-  <div class="kicker">Break</div>
-  <h1>10-minute break</h1>
-  <div class="timer" data-minutes="10"></div>
-  <p class="lead">Next: Session 4 · Evaluating agents</p>
-</section>
 
 <!-- ======================= SESSION 4 ======================= -->
 <section class="slide section" data-session="Session 4 · Evaluating agents">
@@ -683,11 +662,11 @@ async for message in query(
   <div class="kicker">Checkpoint</div>
   <h2>Rafeeq says "Your refund has been created" but the refunds table is empty. Which grader catches it?</h2>
   <div class="opts">
-    <div class="opt" data-k="A">contains_any "refund"</div>
-    <div class="opt" data-k="B">An LLM judge with the rubric "confirms the refund"</div>
-    <div class="opt" data-k="C" data-ok>A db grader on the refunds table</div>
+    <div class="opt" data-k="A">An LLM judge with the rubric "confirms the refund"</div>
+    <div class="opt" data-k="B" data-ok>A db grader on the refunds table</div>
+    <div class="opt" data-k="C">contains_any "refund"</div>
   </div>
-  <div class="why callout tip small"><b>C.</b> Only the outcome check sees the world. A and B grade the claim, and both would pass a confident hallucination.</div>
+  <div class="why callout tip small"><b>B.</b> Only the outcome check sees the world. C and A grade the claim, and both would pass a confident hallucination.</div>
 </section>
 
 <!-- ======================= CLOSING ======================= -->

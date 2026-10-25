@@ -2,7 +2,7 @@
 
 **SDAIA Academy · AI Engineering Track**: a 4-day hands-on bootcamp (4 sessions per day) plus a capstone presentation day. Build agents that work, and the systems around them: the three LLM API shapes and the agent loop, context engineering, harnesses, loops and graphs, then evaluation, security and production. Every lab runs on **free** open models through OpenRouter (and Hugging Face).
 
-**Course page and slides:** https://sdaiaacademy.github.io/agentic-ai/
+**Course page:** https://sdaiaacademy.github.io/agentic-ai/
 
 | Day | Theme | Slides |
 |---|---|---|
@@ -12,9 +12,7 @@
 | 4 | Graph Engineering & Production | [day4](https://sdaiaacademy.github.io/agentic-ai/slides/day4.html) |
 | 5 | Capstone Project Presentations | [day5](https://sdaiaacademy.github.io/agentic-ai/slides/day5.html) |
 
-Each day runs Session 1 → short break → Session 2 → mid-day break → Session 3 → short break → Session 4. Every session is about 20–25 minutes of concepts and demos followed by a 25-minute lab. Break slides default to 10 minutes (20 for the mid-day break); the instructor can change the length or type a "back at" time on the slide.
-
-**Slide keys:** `F` fullscreen · `Esc` exit · `←` `→` / `↑` `↓` navigate · `N` speaker notes · `O` overview · `T` start/pause timer · `?` help.
+Each day has four sessions with a short break between them and a longer one at mid-day. Every session is about 20–25 minutes of concepts and demos followed by a 25-minute lab.
 
 ## How the course is organised
 
@@ -47,10 +45,6 @@ labs/               notebooks, case-study data, shared helpers, servers, loop ru
 ```
 
 Labs run on any laptop CPU with [uv](https://docs.astral.sh/uv/) or on Google Colab (one click from the course page): see [labs/README.md](labs/README.md).
-
-The slide engine and the course-page style are shared by all Academy courses and served from
-[SDAIAAcademy/slides](https://github.com/SDAIAAcademy/slides); the decks declare `data-track="ai-engineering"`.
-Add `?check` to a deck's URL to run its layout self-check. It flags overflowing slides and clipped code lines.
 
 ## Sources
 

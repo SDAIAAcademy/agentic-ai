@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Day 1 · Agentic AI Systems Engineering</title>
-<link rel="icon" href="https://sdaiaacademy.github.io/slides/img/academy.svg">
+<link rel="icon" href="https://sdaiaacademy.github.io/slides/icon.svg">
 <link rel="stylesheet" href="https://sdaiaacademy.github.io/slides/deck.css">
 </head>
 <body>
@@ -151,11 +151,8 @@ uv run jupyter lab</code></pre>
   <h2>Day 1 schedule</h2>
   <div class="agenda">
     <div class="item"><span><b>Session 1 · The agentic landscape</b><small>What an agent is, workflows vs. agents, the three API shapes, providers, benchmarks, tokens and cost</small></span></div>
-    <div class="item brk"><span>Break</span></div>
     <div class="item"><span><b>Session 2 · The OpenAI Responses API</b><small>Items, structured outputs, streaming events, state, built-in tools, Open Responses, the Decisions API</small></span></div>
-    <div class="item brk"><span>Long break</span></div>
     <div class="item"><span><b>Session 3 · The Anthropic Messages API and tool design</b><small>Content blocks, tool_use and tool_result, thinking, caching, who serves /v1/messages, designing tools</small></span></div>
-    <div class="item brk"><span>Break</span></div>
     <div class="item"><span><b>Session 4 · The agent loop from scratch</b><small>The loop in 25 lines, stop conditions and budgets, errors as observations, one loop over three shapes</small></span></div>
   </div>
 </section>
@@ -338,19 +335,13 @@ resp.usage.cost                # OpenRouter: USD, 0 for :free</code></pre>
   <div class="kicker">Checkpoint</div>
   <h2>A free model ranks high on LMArena. What do you still need before Rafeeq depends on it?</h2>
   <div class="opts">
-    <div class="opt" data-k="A">Nothing: human preference is the best overall signal</div>
-    <div class="opt" data-k="B" data-ok>Tool-calling evidence (BFCL, τ²-bench), a fallback for 429s, and a run on our own tasks</div>
-    <div class="opt" data-k="C">Its Artificial Analysis intelligence index above a fixed threshold</div>
+    <div class="opt" data-k="A">Its Artificial Analysis intelligence index above a fixed threshold</div>
+    <div class="opt" data-k="B">Nothing: human preference is the best overall signal</div>
+    <div class="opt" data-k="C" data-ok>Tool-calling evidence (BFCL, τ²-bench), a fallback for 429s, and a run on our own tasks</div>
   </div>
-  <div class="why callout tip small"><b>B.</b> LMArena measures chat preference, not tool use or policy adherence. Free endpoints are shared and get rate-limited. Public scores shortlist; your own eval decides.</div>
+  <div class="why callout tip small"><b>C.</b> LMArena measures chat preference, not tool use or policy adherence. Free endpoints are shared and get rate-limited. Public scores shortlist; your own eval decides.</div>
 </section>
 
-<section class="slide break" data-label="Break">
-  <div class="kicker">Break</div>
-  <h1>10-minute break</h1>
-  <div class="timer" data-minutes="10"></div>
-  <p class="lead">Next: Session 2 · The OpenAI Responses API</p>
-</section>
 
 <!-- ======================= SESSION 2 ======================= -->
 <section class="slide section" data-session="Session 2 · The OpenAI Responses API">
@@ -616,19 +607,13 @@ Madar Municipal Services.
   <div class="kicker">Checkpoint</div>
   <h2>Your agent runs on OpenRouter today and may move to a vLLM server. Which Responses features do you build on?</h2>
   <div class="opts">
-    <div class="opt" data-k="A">Conversations and <code>previous_response_id</code>, so you send fewer tokens</div>
-    <div class="opt" data-k="B">Hosted <code>web_search</code> and <code>code_interpreter</code>, so you don't write tool code</div>
-    <div class="opt" data-k="C" data-ok>Items, function tools, <code>text.format</code> and stateless replay with <code>store=False</code></div>
+    <div class="opt" data-k="A" data-ok>Items, function tools, <code>text.format</code> and stateless replay with <code>store=False</code></div>
+    <div class="opt" data-k="B">Conversations and <code>previous_response_id</code>, so you send fewer tokens</div>
+    <div class="opt" data-k="C">Hosted <code>web_search</code> and <code>code_interpreter</code>, so you don't write tool code</div>
   </div>
-  <div class="why callout tip small"><b>C.</b> That is the portable core of Open Responses. Server-side state and hosted tools are vendor extensions that most open-model servers don't implement.</div>
+  <div class="why callout tip small"><b>A.</b> That is the portable core of Open Responses. Server-side state and hosted tools are vendor extensions that most open-model servers don't implement.</div>
 </section>
 
-<section class="slide break" data-label="Long break">
-  <div class="kicker">Break</div>
-  <h1>20-minute break</h1>
-  <div class="timer" data-minutes="20"></div>
-  <p class="lead">Next: Session 3 · The Anthropic Messages API and tool design</p>
-</section>
 
 <!-- ======================= SESSION 3 ======================= -->
 <section class="slide section" data-session="Session 3 · Messages API and tool design">
@@ -809,12 +794,6 @@ msg.content      # 3 · blocks: text, tool_use, thinking</code></pre>
   <div class="why callout tip small"><b>B.</b> A reply cut at <code>max_tokens</code> can contain a tool call with incomplete arguments, and running it can do real damage (a refund for the wrong amount). Always check the stop reason before acting.</div>
 </section>
 
-<section class="slide break" data-label="Break">
-  <div class="kicker">Break</div>
-  <h1>10-minute break</h1>
-  <div class="timer" data-minutes="10"></div>
-  <p class="lead">Next: Session 4 · The agent loop from scratch</p>
-</section>
 
 <!-- ======================= SESSION 4 ======================= -->
 <section class="slide section" data-session="Session 4 · The agent loop">
