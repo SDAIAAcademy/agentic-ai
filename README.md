@@ -42,13 +42,14 @@ The whole week follows one case study: **Madar Municipal Services**, a fictional
 ```
 index.html          course page (GitHub Pages)
 slides/             one HTML deck per day
-assets/             slide engine (deck.css, deck.js) and logo
 labs/               notebooks, case-study data, shared helpers, servers, loop runner, CI eval, capstone kit
 .github/workflows/  the smoke eval (Lab 4.4)
 ```
 
 Labs run on any laptop CPU with [uv](https://docs.astral.sh/uv/) or on Google Colab (one click from the course page): see [labs/README.md](labs/README.md).
 
+The slide engine and the course-page style are shared by all Academy courses and served from
+[SDAIAAcademy/slides](https://github.com/SDAIAAcademy/slides); the decks declare `data-track="ai-engineering"`.
 Add `?check` to a deck's URL to run its layout self-check. It flags overflowing slides and clipped code lines.
 
 ## Sources

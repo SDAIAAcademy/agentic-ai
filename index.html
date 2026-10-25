@@ -1,60 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-track="ai-engineering">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Agentic AI Systems Engineering</title>
-<link rel="icon" href="assets/img/academy.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --navy: #1c355e; --teal: #00ae8d; --coral: #e96852; --cyan: #00c1de; --amber: #ffb548; --purple: #625d9c;
-    --ink: #101820; --paper: #f7f5f0; --paper-2: #efece4; --line: #d4d0c5; --muted: #5b6472;
-    --font: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.55 var(--font); }
-  a { color: var(--teal); }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-  header {
-    background: radial-gradient(900px 500px at 85% 0%, rgba(0,174,141,.25), transparent 60%),
-                radial-gradient(700px 400px at 0% 100%, rgba(255,181,72,.18), transparent 60%), var(--navy);
-    color: #fff; padding: 28px 0 56px;
-  }
-  .logo { height: 44px; color: #fff; display: flex; }
-  .logo svg { height: 100%; width: auto; }
-  .kicker { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--amber); margin: 48px 0 10px; }
-  h1 { font-size: clamp(34px, 6vw, 58px); line-height: 1.05; margin: 0 0 14px; letter-spacing: -.01em; }
-  header p { color: rgba(255,255,255,.8); font-size: 20px; max-width: 760px; margin: 0; }
-  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
-  .meta span { font-size: 14px; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.3); }
-  .meta span.track { background: var(--amber); color: var(--ink); border-color: var(--amber); font-weight: 600; }
-  h2 { color: var(--navy); font-size: 28px; margin: 56px 0 16px; }
-  h3 { color: var(--navy); margin: 0 0 6px; font-size: 20px; }
-  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-  .card { background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--c, var(--navy)); border-radius: 14px; padding: 20px; }
-  .card p { margin: 0; color: var(--muted); font-size: 15px; }
-  .day { background: #fff; border: 1px solid var(--line); border-radius: 16px; margin-bottom: 18px; overflow: hidden; }
-  .day-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 22px; border-left: 8px solid var(--c); }
-  .day-head .t { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--c); font-weight: 700; }
-  .day-head h3 { font-size: 22px; margin: 2px 0 0; }
-  .btn { display: inline-block; text-decoration: none; background: var(--navy); color: #fff; padding: 9px 16px; border-radius: 10px; font-weight: 600; font-size: 15px; }
-  .btn:hover { background: #142846; }
-  table { width: 100%; border-collapse: collapse; font-size: 15px; }
-  td, th { padding: 10px 22px; border-top: 1px solid var(--paper-2); text-align: left; vertical-align: top; }
-  th { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-  td.brk { color: var(--muted); font-style: italic; }
-  code { font-family: var(--mono); font-size: 13.5px; background: rgba(28,53,94,.07); padding: 1px 6px; border-radius: 5px; }
-  .two { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-  ul { padding-left: 20px; } li { margin-bottom: 6px; }
-  .bar { display: grid; grid-template-columns: 1fr 52px; gap: 10px; align-items: center; margin-bottom: 8px; font-size: 15px; }
-  .bar i { display: block; height: 10px; border-radius: 5px; background: var(--c, var(--teal)); width: var(--w); margin-top: 4px; }
-  footer { margin: 64px 0 0; padding: 24px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
-  .scroll { overflow-x: auto; }
-  @media (max-width: 640px) { td, th { padding: 9px 12px; } .day-head { padding: 16px; } }
-</style>
+<link rel="icon" href="https://sdaiaacademy.github.io/slides/img/academy.svg">
+<link rel="stylesheet" href="https://sdaiaacademy.github.io/slides/page.css">
 </head>
 <body>
 <header>
@@ -200,7 +151,6 @@
   </div>
 </main>
 <footer><div class="wrap">SDAIA Academy · AI Engineering Track · Agentic AI Systems Engineering</div></footer>
-<script src="assets/logo.js"></script>
-<script>document.getElementById('logo').innerHTML = window.ACADEMY_LOGO || 'SDAIA Academy';</script>
+<script src="https://sdaiaacademy.github.io/slides/academy.js"></script>
 </body>
 </html>
