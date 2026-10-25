@@ -10,3 +10,4 @@ labs/cache/
 labs/data/madar.sqlite
 labs/data/inbox.jsonl
 .pytest_cache/
+.shots/

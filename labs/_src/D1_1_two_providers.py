@@ -1,9 +1,11 @@
 # %% [markdown]
 # # Lab 1.1 · Two providers, one client
 #
-# Day 1 · Session 1 (The agentic landscape) · 25 min. Every agent in this course talks to models through an
-# **OpenAI-compatible HTTP API**. One client, a different `base_url`, and you can switch between OpenRouter, Hugging Face
-# Inference Providers, vLLM, Ollama or a hosted vendor. In this lab you:
+# Day 1 · Session 1 (What an LLM is, and how to call one) · 25 min. A language model takes tokens and predicts the
+# next one; it remembers nothing between calls, so every request carries the whole conversation as a list of
+# messages. You reach it through an **OpenAI-compatible HTTP API** (Chat Completions): one client, a different
+# `base_url`, and you can switch between OpenRouter, Hugging Face Inference Providers, vLLM, Ollama or a hosted
+# vendor. In this lab you:
 # - call a free model on OpenRouter with the plain `openai` SDK and read everything the response tells you;
 # - stream a response and measure time to first token;
 # - list the free models that support tool calling, and shortlist them;

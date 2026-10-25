@@ -61,7 +61,7 @@
 </section>
 
 <section class="slide" data-label="Who decides">
-  <div class="kicker">Workflows vs. agents (Anthropic, Building effective agents)</div>
+  <div class="kicker">Recap from Day 1 · workflows vs. agents</div>
   <h2>Who decides the next step: your code, or the model?</h2>
   <div class="cols cols-2 gap-s">
     <div class="card c-purple"><h4>Workflow (graph)</h4>
@@ -93,11 +93,11 @@
     <tr><td><b>Orchestrator–workers</b></td><td>a planner node sends sub-tasks to workers it chooses at run time</td><td>Rafeeq's coordinator asking policy, records, scheduling (S2)</td></tr>
     <tr><td><b>Evaluator–optimiser</b></td><td>generate → evaluate → loop back until good</td><td>draft a decision letter → grade it against the rubric → revise</td></tr>
   </table>
-  <p class="small mt-s">Plus two nodes that turn a workflow into a <b>system</b>: a <b>human gate</b> (approve, edit, reject) and a <b>checkpoint</b> after every step.</p>
+  <p class="small mt-s">A <b>graph</b> here is a workflow written down: <b>nodes</b> are steps, <b>edges</b> are the allowed transitions (fixed or chosen by a function), and one shared <b>state</b> travels along. Add a <b>human gate</b> (approve, edit, reject) and a <b>checkpoint</b> (saved state) after every step, and the workflow becomes a system.</p>
 </section>
 
 <section class="slide" data-label="LangGraph">
-  <div class="kicker">LangGraph 1.x</div>
+  <div class="kicker">LangGraph 1.x · LangChain's open-source library for workflows as graphs</div>
   <h2>State, nodes, edges, and a compile step</h2>
   <div class="cols cols-2">
     <pre class="code s" data-file="python (Lab 4.1)"><code class="language-python">class Review(TypedDict, total=False):
@@ -125,7 +125,7 @@ graph = g.compile(checkpointer=SqliteSaver(conn))</code></pre>
 </section>
 
 <section class="slide" data-label="Human gate">
-  <div class="kicker">Durable execution</div>
+  <div class="kicker">Durable execution: state saved after every step, so a run can pause or crash and continue</div>
   <h2>Interrupt, wait a week, resume</h2>
   <div class="cols cols-2">
     <pre class="code s" data-file="python (Lab 4.1)"><code class="language-python">def officer_review(s):
@@ -193,6 +193,7 @@ graph.get_state_history(cfg)  # every step, for audit</code></pre>
     <div class="opt" data-k="A">Only if the model is confident</div>
     <div class="opt" data-k="B">Yes: low risk and complete means approve</div>
     <div class="opt" data-k="C" data-ok>No: only a licensing officer decides (POL-01). Risk changes how it is presented, not whether a person decides</div>
+    <div class="opt" data-k="D">Yes, if two judge models agree</div>
   </div>
   <div class="why callout tip small"><b>C.</b> The graph prepares the decision; a person makes it. Human-only decisions are a policy choice, and the graph makes it impossible to skip.</div>
 </section>
@@ -306,11 +307,12 @@ async for r in a2a.send_message(req):
   <div class="kicker">Checkpoint</div>
   <h2>Two workers can both book inspections. A citizen asks to move one. What's the risk?</h2>
   <div class="opts">
-    <div class="opt" data-k="A" data-ok>Conflicting or duplicate writes: each worker acts on partial context</div>
-    <div class="opt" data-k="B">Only higher cost</div>
-    <div class="opt" data-k="C">None: more agents means more reliability</div>
+    <div class="opt" data-k="A">Only higher cost</div>
+    <div class="opt" data-k="B">None: more agents means more reliability</div>
+    <div class="opt" data-k="C">Slower answers, because the workers take turns</div>
+    <div class="opt" data-k="D" data-ok>Conflicting or duplicate writes: each worker acts on partial context</div>
   </div>
-  <div class="why callout tip small"><b>A.</b> Coupled writes belong to one owner. Parallelise reads; route every write through one agent, one graph node, and one approval.</div>
+  <div class="why callout tip small"><b>D.</b> Coupled writes belong to one owner. Parallelise reads; route every write through one agent, one graph node, and one approval.</div>
 </section>
 
 
@@ -328,7 +330,7 @@ async for r in a2a.send_message(req):
 </section>
 
 <section class="slide" data-label="OWASP">
-  <div class="kicker">OWASP Top 10 for Agentic Applications (Dec 2025)</div>
+  <div class="kicker">OWASP (the open security community behind the web Top 10) · Top 10 for Agentic Applications, Dec 2025</div>
   <h2>The agentic threat list</h2>
   <div class="cols cols-2 gap-s">
     <table class="t small">
@@ -413,7 +415,7 @@ async for r in a2a.send_message(req):
     <div class="stack">
       <div class="card c-coral flat"><h4>Red-team suite</h4><p class="small mb0">Six attacks and benign emails, graded on what reached the <b>outbox</b>.</p></div>
       <div class="card c-teal flat"><h4>Two numbers</h4><p class="small mb0"><b>Attack success</b> must be 0; <b>benign replies</b> must stay high.</p></div>
-      <div class="card c-navy flat"><h4>KSA context</h4><p class="small mb0">PDPL, SDAIA's AI Ethics Principles (accountability, human oversight), NCA's AI cybersecurity guidance.</p></div>
+      <div class="card c-navy flat"><h4>KSA context</h4><p class="small mb0">PDPL, SDAIA's AI Ethics Principles (accountability, human oversight), and AI guidance from the NCA (National Cybersecurity Authority).</p></div>
     </div>
   </div>
 </section>
@@ -440,11 +442,12 @@ async for r in a2a.send_message(req):
   <div class="kicker">Checkpoint</div>
   <h2>Your system prompt says "never include national IDs in emails". Is that a defence?</h2>
   <div class="opts">
-    <div class="opt" data-k="A">Yes, if the model is good enough</div>
-    <div class="opt" data-k="B" data-ok>A guide, not a guarantee: enforce it in code before the email leaves</div>
+    <div class="opt" data-k="A" data-ok>A guide, not a guarantee: enforce it in code before the email leaves</div>
+    <div class="opt" data-k="B">Yes, if the model is good enough</div>
     <div class="opt" data-k="C">Yes, if it's written in both Arabic and English</div>
+    <div class="opt" data-k="D">Yes, if it is the first line of the system prompt</div>
   </div>
-  <div class="why callout tip small"><b>B.</b> An injection is designed to win against the prompt. Keep the instruction (it reduces attempts) and add a sensor that blocks the action.</div>
+  <div class="why callout tip small"><b>A.</b> An injection is designed to win against the prompt. Keep the instruction (it reduces attempts) and add a sensor that blocks the action.</div>
 </section>
 
 
@@ -462,7 +465,7 @@ async for r in a2a.send_message(req):
 </section>
 
 <section class="slide" data-label="Service">
-  <div class="kicker">From notebook to service</div>
+  <div class="kicker">From notebook to service · FastAPI, a Python web framework with Pydantic validation</div>
   <h2>What the service adds around the loop</h2>
   <div class="cols cols-2">
     <pre class="code s" data-file="python (Lab 4.4)"><code class="language-python">@app.post("/v1/chat", response_model=ChatOut)
@@ -481,7 +484,7 @@ def chat(req: ChatIn, key: str = Depends(api_key)):
       <li><b>Identity</b>: an API key per client; sessions scoped to it.</li>
       <li><b>Budgets</b>: tokens per session, steps per turn; 429 with a clear message.</li>
       <li><b>Least privilege</b>: write tools queued for an officer, never executed by the service.</li>
-      <li><b>Contract tests</b> run before any model is called.</li>
+      <li><b>Contract tests</b> check the API itself (keys, validation, limits) without calling a model.</li>
     </ul>
   </div>
 </section>
@@ -526,7 +529,7 @@ def chat(req: ChatIn, key: str = Depends(api_key)):
     <div class="arrow">→</div>
     <div class="step c-cyan"><b>Full suite</b>30 tasks × k trials, nightly or before release</div>
     <div class="arrow">→</div>
-    <div class="step c-coral"><b>Rollout</b>shadow traffic, canary, compare traces</div>
+    <div class="step c-coral"><b>Rollout</b>shadow (new version answers copies of real requests, unseen), then canary (a small share of users)</div>
   </div>
   <pre class="code s mt" data-file=".github/workflows/smoke-eval.yml (excerpt)"><code class="language-yaml">- uses: astral-sh/setup-uv@v6
 - name: Smoke eval

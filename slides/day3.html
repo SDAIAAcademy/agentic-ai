@@ -33,7 +33,7 @@
     <div class="rung c-amber on"><b>Loop</b>An outer loop that runs the agent until checks pass, with budgets<small>Day 3 · S3</small></div>
     <div class="rung c-purple off"><b>Graph</b>States, checkpoints, approvals<small>Day 4</small></div>
   </div>
-  <div class="callout tip mt"><b>And one cross-cutting skill: evals (S4).</b> Every change to a prompt, a context strategy, a harness or a loop is a hypothesis. From today we test it.</div>
+  <div class="callout tip mt"><b>And one cross-cutting skill: evals (S4).</b> An <b>eval</b> is a test suite for an agent: tasks with checks, run several times because outputs vary. Every change to a prompt, a context strategy, a harness or a loop is a hypothesis; from today we test it.</div>
 </section>
 
 <section class="slide" data-label="Today">
@@ -67,7 +67,7 @@
     <div>
       <ul class="bullets">
         <li>Anthropic, <i>Effective harnesses for long-running agents</i> (Nov 2025); OpenAI, <i>Harness engineering</i> (Feb 2026); Birgitta Böckeler on martinfowler.com (Apr 2026): agent quality lives as much in the harness as in the model.</li>
-        <li>LangChain raised its Terminal-Bench 2.0 score from <b>52.8</b> to <b>66.5</b> by changing only the harness, same model.</li>
+        <li>LangChain (the company behind the LangChain and LangGraph frameworks) raised its Terminal-Bench 2.0 score from <b>52.8</b> to <b>66.5</b> by changing only the harness, same model.</li>
         <li>So the question "which model?" comes with a second one: "in which harness?"</li>
       </ul>
     </div>
@@ -183,8 +183,8 @@ pi --mode json --no-session \
       </ul>
     </div>
     <div class="stack">
-      <div class="card c-coral flat"><h4>2026: the agent-security case study</h4><p class="small mb0"><b>CVE-2026-25253</b>: a crafted link could leak the gateway token and hand over the agent. <b>"ClawHavoc"</b>: 341 malicious skills on ClawHub. Thousands of gateways exposed to the internet.</p></div>
-      <div class="card c-navy flat"><h4>The lesson</h4><p class="small mb0">Autonomy + private data + outside input + one public registry = the lethal trifecta at scale (Day 4).</p></div>
+      <div class="card c-coral flat"><h4>2026: the agent-security case study</h4><p class="small mb0"><b>CVE-2026-25253</b> (a CVE is the public ID of a disclosed vulnerability): a crafted link could leak the gateway token and hand over the agent. <b>"ClawHavoc"</b>: 341 malicious skills on ClawHub. Thousands of gateways exposed to the internet.</p></div>
+      <div class="card c-navy flat"><h4>The lesson</h4><p class="small mb0">Private data + untrusted input + a way to send data out, in one agent, is the <b>lethal trifecta</b>: one prompt injection can leak everything. OpenClaw has all three, at scale (Day 4).</p></div>
     </div>
   </div>
 </section>
@@ -205,7 +205,7 @@ pi --mode json --no-session \
         <li><b>Budgets as configuration</b>: token limits per task.</li>
         <li><b>Permission scopes</b> declared in <code>permissions.yaml</code>.</li>
         <li>Any OpenAI-compatible model through one base-URL setting.</li>
-        <li>A much smaller project: check maintenance before adopting. Not to be confused with Inception's <b>Mercury</b> diffusion LLMs.</li>
+        <li>A much smaller project: check maintenance before adopting. Unrelated to Inception's <b>Mercury</b> models.</li>
       </ul></div>
   </div>
   <p class="xsmall muted mt-s">Star counts and versions as of October 2026. Also worth a look: Claude Code, OpenAI Codex CLI, OpenCode, goose.</p>
@@ -276,10 +276,11 @@ K.run_agent(task, tools, permission=policy,
   <h2>An officer approves Rafeeq's <code>send_email</code> to an outside address without reading it. What should have stopped it?</h2>
   <div class="opts">
     <div class="opt" data-k="A">A better system prompt</div>
-    <div class="opt" data-k="B" data-ok>A <code>before_tool</code> guard that enforces "registered address only" in code, whatever the approval says</div>
-    <div class="opt" data-k="C">An audit log entry</div>
+    <div class="opt" data-k="B">An audit log entry</div>
+    <div class="opt" data-k="C">A second officer approving every email</div>
+    <div class="opt" data-k="D" data-ok>A <code>before_tool</code> guard that enforces "registered address only" in code, whatever the approval says</div>
   </div>
-  <div class="why callout tip small"><b>B.</b> Approvals catch the unexpected; guards enforce what you already know. The audit log (C) only tells you afterwards.</div>
+  <div class="why callout tip small"><b>D.</b> Approvals catch the unexpected; guards enforce what you already know. The audit log (B) only tells you afterwards, and a second approver (C) gets tired too.</div>
 </section>
 
 
@@ -334,9 +335,9 @@ rafeeq = Agent(name="Rafeeq", model=model,
 result = await Runner.run(rafeeq, question,
     session=SQLiteSession("sara", "sessions.db"))</code></pre>
     <div class="stack">
-      <div class="card c-teal flat"><h4>Primitives</h4><p class="small mb0">Agent, Runner, function tools, <b>handoffs</b>, <b>guardrails</b>, <b>sessions</b>, <b>tracing</b>.</p></div>
-      <div class="card c-coral flat"><h4>Approvals</h4><p class="small mb0"><code>needs_approval=True</code> pauses the run; approve or reject each interruption, then resume. The state serialises to JSON.</p></div>
-      <div class="card c-cyan flat"><h4>Any model</h4><p class="small mb0">Responses API on OpenAI; Chat Completions for any other provider.</p></div>
+      <div class="card c-teal flat"><h4>Primitives</h4><p class="small mb0"><code>Agent</code> (model + prompt + tools), <code>Runner</code> (the loop), <b>handoffs</b> (pass the conversation to another agent), <b>guardrails</b> (checks that can stop a run), <b>sessions</b> (stored history), <b>tracing</b>.</p></div>
+      <div class="card c-coral flat"><h4>Approvals</h4><p class="small mb0"><code>needs_approval=True</code> pauses the run; approve or reject, then resume. State serialises to JSON.</p></div>
+      <div class="card c-cyan flat"><h4>Any model</h4><p class="small mb0">Responses on OpenAI; Chat Completions elsewhere.</p></div>
     </div>
   </div>
 </section>
@@ -376,14 +377,14 @@ async for message in query(
       <ul class="bullets small mb0">
         <li>Agents as stored objects with tools, instructions and versions.</li>
         <li>Runs with sessions, tool approvals and hosted tools, on OpenAI's infrastructure.</li>
-        <li>Successor to Assistants (shut down Aug 2026) and Agent Builder (Nov 2026).</li>
+        <li>Successor to Assistants (shut down Aug 2026) and Agent Builder, the visual workflow tool (shuts down Nov 2026).</li>
       </ul></div>
     <div class="card c-coral"><h4>Claude Managed Agents (beta, Apr 2026)</h4>
       <ul class="bullets small mb0">
         <li>Anthropic runs the loop <b>and</b> a per-session container where tools execute.</li>
         <li>Versioned agent configs, sessions with an event stream, skills and MCP.</li>
         <li>Vaults keep credentials out of the sandbox; outcomes grade the agent against a rubric; schedules.</li>
-        <li>Sessions are stored by Anthropic: not eligible for ZDR (<a href="https://platform.claude.com/docs/en/managed-agents/overview">overview</a>).</li>
+        <li>Sessions are stored by Anthropic: not eligible for ZDR, zero data retention (<a href="https://platform.claude.com/docs/en/managed-agents/overview">overview</a>).</li>
       </ul></div>
   </div>
   <div class="callout warn mt"><b>Questions before you buy:</b> where do sessions, files and logs live (PDPL, data residency)? Can you export traces? Which models can you use? What happens to your agent when the beta changes?</div>
@@ -411,11 +412,12 @@ async for message in query(
   <div class="kicker">Checkpoint</div>
   <h2>An officer approves a refund an hour after Rafeeq asked. What must the system keep in between?</h2>
   <div class="opts">
-    <div class="opt" data-k="A">Only the refund amount, so it can be re-created</div>
-    <div class="opt" data-k="B">Nothing: the model will remember the conversation</div>
-    <div class="opt" data-k="C" data-ok>The paused run's state (history, pending call, arguments), stored durably and resumable</div>
+    <div class="opt" data-k="A" data-ok>The paused run's state (history, pending call, arguments), stored durably and resumable</div>
+    <div class="opt" data-k="B">Only the refund amount, so it can be re-created</div>
+    <div class="opt" data-k="C">Nothing: the model will remember the conversation</div>
+    <div class="opt" data-k="D">The officer's name, so the model can thank them</div>
   </div>
-  <div class="why callout tip small"><b>C.</b> The model remembers nothing between calls. The SDK serialises a <code>RunState</code>; hosted runtimes keep it for you; tomorrow's graph keeps it in a checkpoint.</div>
+  <div class="why callout tip small"><b>A.</b> The model remembers nothing between calls. The SDK serialises a <code>RunState</code>; hosted runtimes keep it for you; tomorrow's graph keeps it in a checkpoint.</div>
 </section>
 
 
@@ -456,7 +458,7 @@ async for message in query(
   <h2>The Ralph loop</h2>
   <div class="cols cols-2">
     <div>
-      <pre class="code" data-file="the original idea"><code class="language-bash">while :; do cat PROMPT.md | claude-code ; done</code></pre>
+      <pre class="code" data-file="the original idea (a coding agent's CLI in a shell loop)"><code class="language-bash">while :; do cat PROMPT.md | claude-code ; done</code></pre>
       <ul class="bullets small mt-s">
         <li><b>Fresh context every iteration</b>: no rot, no stale plans; you can change the model or the harness between iterations.</li>
         <li><b>State outside the model</b>: the code, <code>PROGRESS.md</code>, git.</li>
@@ -528,11 +530,12 @@ async for message in query(
   <div class="kicker">Checkpoint</div>
   <h2>Iterations 3, 4 and 5 all end with 4 failing tests. What should the loop do?</h2>
   <div class="opts">
-    <div class="opt" data-k="A" data-ok>Stop on "no progress", keep the commits, and hand the progress notes to a person</div>
-    <div class="opt" data-k="B">Delete the four failing tests so the next iteration can finish</div>
-    <div class="opt" data-k="C">Keep going: the next iteration might succeed</div>
+    <div class="opt" data-k="A">Delete the four failing tests so the next iteration can finish</div>
+    <div class="opt" data-k="B">Keep going: the next iteration might succeed</div>
+    <div class="opt" data-k="C" data-ok>Stop on "no progress", keep the commits, and hand the progress notes to a person</div>
+    <div class="opt" data-k="D">Revert to the first commit and start over with the same prompt</div>
   </div>
-  <div class="why callout tip small"><b>A.</b> A stalled loop spends money to stay stuck. The notes and commits make the hand-off cheap. (B) is the failure the test guard exists to prevent.</div>
+  <div class="why callout tip small"><b>C.</b> A stalled loop spends money to stay stuck. The notes and commits make the hand-off cheap. (A) is the failure the test guard exists to prevent.</div>
 </section>
 
 
@@ -555,7 +558,7 @@ async for message in query(
   <table class="t">
     <tr><th>Term</th><th>Meaning</th><th>Rafeeq's suite</th></tr>
     <tr><td><b>Task</b></td><td>one input with success criteria</td><td>30 lines in <code>data/eval/tasks.jsonl</code></td></tr>
-    <tr><td><b>Trial</b></td><td>one attempt at a task (agents are stochastic)</td><td><code>trials=k</code>, cache off</td></tr>
+    <tr><td><b>Trial</b></td><td>one attempt at a task (sampling makes each run differ)</td><td><code>trials=k</code>, cache off</td></tr>
     <tr><td><b>Grader</b></td><td>logic that scores part of the result</td><td>contains, not_contains, tool_called, db, judge</td></tr>
     <tr><td><b>Transcript</b></td><td>everything the agent did</td><td><code>run.trace</code>, <code>run.tool_calls</code></td></tr>
     <tr><td><b>Outcome</b></td><td>the state of the world afterwards</td><td>the run's own copy of <code>madar.sqlite</code></td></tr>
@@ -568,7 +571,7 @@ async for message in query(
   <h2>Code where you can, a model where you must</h2>
   <div class="cols cols-3 gap-s">
     <div class="card c-teal"><h4>Code graders</h4><p class="small">String, tool-call and database checks. Fast, cheap, exact; brittle to phrasing.</p><span class="pill c-teal">43 checks in our suite</span></div>
-    <div class="card c-cyan"><h4>LLM judges</h4><p class="small">A rubric per task. Flexible; needs its own validation, ideally a different model from the agent.</p><span class="pill c-cyan">8 rubrics</span></div>
+    <div class="card c-cyan"><h4>LLM judges</h4><p class="small">A second model scores the answer against a rubric. Flexible; needs its own validation, ideally a different model from the agent.</p><span class="pill c-cyan">8 rubrics</span></div>
     <div class="card c-coral"><h4>Human review</h4><p class="small">Read transcripts; label a sample to check the judge. Slow and essential at the start.</p><span class="pill c-coral">✱ in Lab 3.4</span></div>
   </div>
   <pre class="code s" style="margin-top:24px" data-file="data/eval/tasks.jsonl (one task)"><code class="language-json">{"id": "refund-rejected", "category": "action", "lang": "ar",
@@ -633,7 +636,8 @@ async for message in query(
       <div class="ev model"><b>span</b><span><code>chat …</code> · gen_ai.usage.output_tokens = 96</span></div>
     </div>
     <ul class="bullets small">
-      <li><b>OpenTelemetry GenAI semantic conventions</b> name the spans and attributes (<code>gen_ai.*</code>) for model calls, tool calls and agents, so any backend can read them.</li>
+      <li><b>OpenTelemetry</b> is the open standard for application traces: a <b>trace</b> is a tree of <b>spans</b>, each a timed operation with attributes.</li>
+      <li>Its <b>GenAI semantic conventions</b> name the spans and attributes (<code>gen_ai.*</code>) for model calls, tool calls and agents, so any backend can read them.</li>
       <li>One trace per run, linked to the eval trial that produced it.</li>
       <li>Day 4 · S4 sends Rafeeq's traces to a local collector.</li>
     </ul>
@@ -665,8 +669,9 @@ async for message in query(
     <div class="opt" data-k="A">An LLM judge with the rubric "confirms the refund"</div>
     <div class="opt" data-k="B" data-ok>A db grader on the refunds table</div>
     <div class="opt" data-k="C">contains_any "refund"</div>
+    <div class="opt" data-k="D">A tool_called grader on <code>get_permit</code></div>
   </div>
-  <div class="why callout tip small"><b>B.</b> Only the outcome check sees the world. C and A grade the claim, and both would pass a confident hallucination.</div>
+  <div class="why callout tip small"><b>B.</b> Only the outcome check sees the world. C and A grade the claim, and both would pass a confident hallucination; D checks a lookup, not the write.</div>
 </section>
 
 <!-- ======================= CLOSING ======================= -->

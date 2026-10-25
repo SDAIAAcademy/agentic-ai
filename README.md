@@ -2,11 +2,13 @@
 
 **SDAIA Academy · AI Engineering Track**: a 4-day hands-on bootcamp (4 sessions per day) plus a capstone presentation day. Build agents that work, and the systems around them: the three LLM API shapes and the agent loop, context engineering, harnesses, loops and graphs, then evaluation, security and production. Every lab runs on **free** open models through OpenRouter (and Hugging Face).
 
+**Audience:** programmers comfortable with Python who have used ChatGPT but have not worked with LLMs from code. Day 1 starts from what a language model is and how it differs from ChatGPT; every later idea is introduced before it is used (see [nuggets.md](nuggets.md) for the dependency map the decks follow).
+
 **Course page:** https://sdaiaacademy.github.io/agentic-ai/
 
 | Day | Theme | Slides |
 |---|---|---|
-| 1 | From Model to Agent: LLM APIs, Tools and the Loop | [day1](https://sdaiaacademy.github.io/agentic-ai/slides/day1.html) |
+| 1 | From a Language Model to an Agent | [day1](https://sdaiaacademy.github.io/agentic-ai/slides/day1.html) |
 | 2 | Context Engineering | [day2](https://sdaiaacademy.github.io/agentic-ai/slides/day2.html) |
 | 3 | Harness & Loop Engineering | [day3](https://sdaiaacademy.github.io/agentic-ai/slides/day3.html) |
 | 4 | Graph Engineering & Production | [day4](https://sdaiaacademy.github.io/agentic-ai/slides/day4.html) |
@@ -20,7 +22,7 @@ The days climb the ladder practitioners now use to describe agent work, **prompt
 
 | Rung | What you engineer | Where |
 |---|---|---|
-| Prompt | system prompts as specifications, tools, structured outputs, the loop | Day 1 |
+| Prompt | what an LLM is, the chat format, system prompts as specifications, structured outputs, tools, the loop | Day 1 |
 | Context | what enters the window: budgets, compaction, retrieval, memory, Agent Skills, MCP | Day 2 |
 | Harness | everything around the model: tools, permissions, hooks, sandbox, sessions, SDKs | Day 3 · S1–S2 |
 | Loop | outer loops with fresh context, back-pressure and exits; evals | Day 3 · S3–S4 |
@@ -39,6 +41,7 @@ The whole week follows one case study: **Madar Municipal Services**, a fictional
 
 ```
 index.html          course page (GitHub Pages)
+nuggets.md          the knowledge map: every concept, where it is taught, and what it depends on
 slides/             one HTML deck per day
 labs/               notebooks, case-study data, shared helpers, servers, loop runner, CI eval, capstone kit
 .github/workflows/  the smoke eval (Lab 4.4)

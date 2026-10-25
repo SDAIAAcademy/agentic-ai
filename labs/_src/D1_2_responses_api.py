@@ -1,9 +1,9 @@
 # %% [markdown]
 # # Lab 1.2 · Triage with the Responses API
 #
-# Day 1 · Session 2 (The OpenAI Responses API) · 25 min. Chat Completions sends a list of messages and returns one
-# message. **Responses** sends and returns a list of typed **items** (messages, function calls, function call outputs,
-# reasoning) and is the shape OpenAI builds its agent features on. The open **Open Responses** spec lets other servers
+# Day 1 · Session 2 (Structured outputs and the Responses API) · 25 min. Chat Completions sends a list of messages
+# and returns one message. **Responses** sends and returns a list of typed **items** (messages, reasoning, and the
+# tool calls of Session 3) and is the shape OpenAI builds its agent features on. The open **Open Responses** spec lets other servers
 # offer the same shape, so OpenRouter, vLLM, Ollama and Hugging Face accept it too.
 #
 # Madar's shared inbox gets about 30 messages a day. Before Rafeeq answers anything, a **triage** step decides what

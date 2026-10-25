@@ -39,13 +39,13 @@
   <p style="color:var(--muted)">Four sessions a day. Each session is about 20–25 minutes of concepts and demos, then a 25-minute lab. In the slides press <code>F</code> for fullscreen, <code>←</code> <code>→</code> to navigate, <code>N</code> for speaker notes, <code>?</code> for help.</p>
 
   <div class="day">
-    <div class="day-head" style="--c:var(--teal)"><div><div class="t">Day 1</div><h3>From Model to Agent: LLM APIs, Tools and the Loop</h3></div><a class="btn" href="slides/day1.html">Open slides →</a></div>
+    <div class="day-head" style="--c:var(--teal)"><div><div class="t">Day 1</div><h3>From a Language Model to an Agent</h3></div><a class="btn" href="slides/day1.html">Open slides →</a></div>
     <div class="scroll"><table>
       <tr><th>Session</th><th>Lab notebook (opens in Colab)</th></tr>
-      <tr><td><b>1 · The agentic landscape</b>: agents vs. workflows, the engineering ladder, three API shapes, OpenRouter and HF, reading benchmarks</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_1_two_providers.ipynb">D1_1_two_providers</a></td></tr>
-      <tr><td><b>2 · The OpenAI Responses API</b>: items, structured outputs, streaming events, stateless replay, Open Responses, the Decisions pattern</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_2_responses_api.ipynb">D1_2_responses_api</a></td></tr>
-      <tr><td><b>3 · The Anthropic Messages API and tool design</b>: content blocks, tool_use / tool_result, thinking, caching, who serves /v1/messages, tools for agents</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_3_messages_and_tools.ipynb">D1_3_messages_and_tools</a></td></tr>
-      <tr><td><b>4 · The agent loop from scratch</b>: stop conditions, budgets, errors as observations, traces, one loop over three shapes</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_4_agent_loop.ipynb">D1_4_agent_loop</a></td></tr>
+      <tr><td><b>1 · What an LLM is, and how to call one</b>: tokens and next-token prediction, LLMs vs. ChatGPT, the chat format, providers, your first API call, choosing a model</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_1_two_providers.ipynb">D1_1_two_providers</a></td></tr>
+      <tr><td><b>2 · Structured outputs and the Responses API</b>: three API shapes, typed items, reasoning models, JSON Schema, validated output, typed decisions, conversation state</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_2_responses_api.ipynb">D1_2_responses_api</a></td></tr>
+      <tr><td><b>3 · Tools and the Messages API</b>: how a model asks your code to run a function, round trips in Messages, one tool for three APIs, tool design, system prompts</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_3_messages_and_tools.ipynb">D1_3_messages_and_tools</a></td></tr>
+      <tr><td><b>4 · The agent loop</b>: agents vs. workflows, the loop from scratch, budgets, errors as observations, traces, one loop over three shapes, the engineering ladder</td><td><a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/D1_4_agent_loop.ipynb">D1_4_agent_loop</a></td></tr>
     </table></div>
   </div>
 
@@ -128,7 +128,7 @@
     </div>
     <div>
       <h2>Setup</h2>
-      <p><b>Audience:</b> Python developers and ML or data engineers who have called an LLM API. No prior agent framework experience needed.</p>
+      <p><b>Audience:</b> Python developers and engineers. Day 1 starts from what a language model is and how it differs from ChatGPT, so no prior LLM, API or agent framework experience is needed.</p>
       <p><b>Environment:</b> any laptop CPU with <code>uv</code>, or Google Colab. All model calls go to <b>free</b> API models (an OpenRouter key; a one-time 10-credit top-up raises the free quota from 50 to 1,000 requests a day). Node.js 22.19+ is optional, for the Pi teardown. Run <a href="https://colab.research.google.com/github/SDAIAAcademy/agentic-ai/blob/main/labs/00_setup_check.ipynb">00_setup_check</a> before Day 1; see <a href="https://github.com/SDAIAAcademy/agentic-ai/tree/main/labs#readme">labs/README.md</a>.</p>
       <p><b>Stack:</b> openai · anthropic · openai-agents · OpenRouter · Hugging Face · Pydantic · model2vec · bm25s · mcp (SDK v2) · LangGraph · a2a-sdk · FastAPI · OpenTelemetry · Pi · PEP 723 scripts with <code>uv run</code>.</p>
       <p><b>Choosing models:</b> <a href="https://artificialanalysis.ai/">Artificial Analysis</a>, <a href="https://lmarena.ai/leaderboard">LMArena</a>, <a href="https://gorilla.cs.berkeley.edu/leaderboard.html">BFCL</a>, <a href="https://taubench.com">τ²-bench</a>, <a href="https://www.tbench.ai/leaderboard">Terminal-Bench</a>, and then your own eval.</p>

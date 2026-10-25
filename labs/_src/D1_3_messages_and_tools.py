@@ -1,7 +1,9 @@
 # %% [markdown]
 # # Lab 1.3 · Rafeeq's first tools, three ways
 #
-# Day 1 · Session 3 (The Anthropic Messages API and tool design) · 25 min. The **Messages** API is Anthropic's shape
+# Day 1 · Session 3 (Tools and the Messages API) · 25 min. A **tool call** is a reply in which the model asks your
+# code to run a function (a name plus JSON arguments); your code runs it and sends the result back. The model never
+# executes anything itself. The **Messages** API is Anthropic's shape
 # ([Claude API docs](https://platform.claude.com/docs/en/intro)),
 # and many engines serve it too (vLLM, SGLang, llama.cpp, Ollama, LM Studio, LiteLLM, OpenRouter), so coding agents
 # built for Claude can run on open models. In this lab you:
@@ -186,6 +188,9 @@ for turn in convo:
 # The model sees **only** the name, the description and the schema. Below are two versions of the same fee
 # calculator: `fee` (what a hurried developer writes) and `m.compute_fee` (named, typed, documented, with an enum for
 # the permit type and units in the descriptions). Both call the same code.
+#
+# `K.run_agent` is the course helper that repeats the round trip you just did by hand until the model answers in
+# text. You write your own version of it in Lab 1.4.
 #
 # ✏️ **Exercise** · For each question in `FEE_QUESTIONS`, run `K.run_agent(question, [tool], ...)` once with `fee`
 # and once with `m.compute_fee` (`max_steps=4`, `verbose=False`). Record whether the right number appears in the
