@@ -1,6 +1,6 @@
 # Agentic AI Systems Engineering · هندسة أنظمة الذكاء الاصطناعي التوكيلي
 
-**SDAIA Academy · AI Engineering Track**: a 4-day hands-on bootcamp (4 sessions per day) plus a capstone presentation day. Build agents that work, and the systems around them: the three LLM API shapes and the agent loop, context engineering, harnesses, loops and graphs, then evaluation, security and production. Every lab runs on **free** open models through OpenRouter (and Hugging Face).
+**SDAIA Academy · AI Engineering Track**: a 4-day hands-on bootcamp (4 sessions per day) plus a capstone polish-and-submit day (an individual project, submitted as a public GitHub repository). Build agents that work, and the systems around them: the three LLM API shapes and the agent loop, context engineering, harnesses, loops and graphs, then evaluation, security and production. Every lab runs on **free** open models through OpenRouter (and Hugging Face).
 
 **Audience:** programmers comfortable with Python who have used ChatGPT but have not worked with LLMs from code. Day 1 starts from what a language model is and how it differs from ChatGPT; every later idea is introduced before it is used (see [nuggets.md](nuggets.md) for the dependency map the decks follow).
 
@@ -12,7 +12,7 @@
 | 2 | Context Engineering | [day2](https://sdaiaacademy.github.io/agentic-ai/slides/day2.html) |
 | 3 | Harness & Loop Engineering | [day3](https://sdaiaacademy.github.io/agentic-ai/slides/day3.html) |
 | 4 | Graph Engineering & Production | [day4](https://sdaiaacademy.github.io/agentic-ai/slides/day4.html) |
-| 5 | Capstone Project Presentations | [day5](https://sdaiaacademy.github.io/agentic-ai/slides/day5.html) |
+| 5 | Capstone: Polish & Submit | [day5](https://sdaiaacademy.github.io/agentic-ai/slides/day5.html) |
 
 Each day has four sessions. Every session is about 20–25 minutes of concepts and demos followed by a 25-minute lab.
 

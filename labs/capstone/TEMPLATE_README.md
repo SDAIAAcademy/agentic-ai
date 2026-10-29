@@ -2,8 +2,12 @@
 
 > One sentence: who uses this agent, and what does it do for them?
 
+[Advanced Agentic AI Systems Engineering - SDAIA Academy](https://github.com/sdaiaacademy/agentic-ai/)
+
+<!-- Keep the course line above exactly as written: a README without it loses part of the presentation mark. This README is your presentation (no live demo, no talk): explain the problem, the design, the A vs. B results with the error analysis and the security note, and point to saved evidence for every claim. -->
+
 **Track:** 1 · Rafeeq in production / 2 · Your harness / 3 · Graph workflow
-**Team:** <names>
+**Author:** <name>
 **Model(s):** <e.g. google/gemma-4-31b-it:free via OpenRouter>, chosen because <benchmark evidence + your own eval>
 
 ## Problem
@@ -62,6 +66,14 @@ Environment: `OPENROUTER_API_KEY` in `.env`. <Anything else.>
 - **Defence:** <what you added; is it enforced in code or does it depend on the model?>
 - **Residual risk:** <what is still possible, and who should know>
 - **Governance:** <PDPL / SDAIA AI principles considerations: data minimisation, human oversight, where data goes>
+
+## Evidence of real runs
+
+<Link the files that back every claim above: eval CSVs for A and B, logs or traces, a transcript of a multi-step task with an approval, screenshots or a short screen recording.>
+
+## AI assistance
+
+<Which AI coding assistants you used, and for what. You are responsible for every design decision, number and claim in this repository.>
 
 ## Limitations and next steps
 

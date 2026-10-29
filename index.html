@@ -32,7 +32,7 @@
     <div class="card" style="--c:var(--cyan)"><h3>Context</h3><p>Budgets, compaction, retrieval, memory, Agent Skills, MCP</p></div>
     <div class="card" style="--c:var(--coral)"><h3>Harness &amp; loop</h3><p>Pi, OpenClaw, Hermes, Mercury; Agents SDK; Ralph loops; evals</p></div>
     <div class="card" style="--c:var(--purple)"><h3>Graph &amp; production</h3><p>LangGraph, multi-agent and A2A, security, FastAPI, OpenTelemetry</p></div>
-    <div class="card" style="--c:var(--amber)"><h3>Demonstrate</h3><p>Capstones: a working agent system, live demo, evals, security note</p></div>
+    <div class="card" style="--c:var(--amber)"><h3>Demonstrate</h3><p>Capstones: a working agent system, run evidence, evals, security note</p></div>
   </div>
 
   <h2>Schedule and materials</h2>
@@ -83,34 +83,35 @@
   </div>
 
   <div class="day">
-    <div class="day-head" style="--c:var(--amber)"><div><div class="t">Day 5</div><h3>Capstone Project Presentations</h3></div><a class="btn" href="slides/day5.html">Open slides →</a></div>
+    <div class="day-head" style="--c:var(--amber)"><div><div class="t">Day 5</div><h3>Capstone: Polish &amp; Submit</h3></div><a class="btn" href="slides/day5.html">Open slides →</a></div>
     <div class="scroll"><table>
       <tr><th>Session</th><th>Notes</th></tr>
-      <tr><td><b>1 · Expectations + final prep</b></td><td>Scoring (15'), then re-run evals, rehearse, record a backup</td></tr>
-      <tr><td><b>2 · Presentations</b></td><td>Presenters 1–4 (8' talk + demo, 4' Q&amp;A)</td></tr>
-      <tr><td><b>3 · Presentations</b></td><td>Presenters 5–8</td></tr>
-      <tr><td><b>4 · Final presentations, review &amp; closing</b></td><td>Presenters 9–11, peer feedback, lessons learned</td></tr>
+      <tr><td><b>1 · Expectations + the README</b></td><td>Rules and scoring (15'), then re-run evals and save the evidence</td></tr>
+      <tr><td><b>2 · Polish and submit</b></td><td>Run evidence, error analysis, security note</td></tr>
+      <tr><td><b>3 · Polish and submit</b></td><td>The README, clean-clone test</td></tr>
+      <tr><td><b>4 · Polish and submit, review &amp; closing</b></td><td>Push the public repository before the deadline, lessons learned</td></tr>
     </table></div>
   </div>
 
   <div class="two">
     <div>
       <h2>Capstone</h2>
-      <p>Individually or in pairs, build a working agent system on one of three tracks:</p>
+      <p>An individual project: build a working agent system on one of three tracks and submit it as a public GitHub repository before the Day 5 deadline. AI coding assistants are allowed for the code, but you own every design decision, number and claim. There is no live demo and no presentation: the README is the presentation, backed by saved evidence of real runs (eval CSVs for both configurations, plus logs or traces, a transcript, screenshots or a short recording).</p>
       <ul>
         <li><b>Rafeeq in production</b>: the Madar assistant as a complete service with MCP tools, memory, approvals, security, evals and an API</li>
         <li><b>Your harness</b>: a domain harness for a real workflow in your entity, with context files, permissions, a loop and evals</li>
         <li><b>Graph workflow</b>: a durable, human-in-the-loop process as a graph with agents inside nodes</li>
       </ul>
-      <p>Minimum: 3+ tools (one over MCP), a context file plus memory or retrieval plus a compaction or budget rule, an approval on a write action with step and cost budgets, 15+ eval tasks on two configurations with an error analysis, and a security note (trifecta, one attack, one defence). Starter kit: <a href="https://github.com/SDAIAAcademy/agentic-ai/tree/main/labs/capstone">labs/capstone/</a>.</p>
+      <p>Minimum: 3+ tools (one over MCP), a context file plus memory or retrieval plus a compaction or budget rule, an approval on a write action with step and cost budgets, 15+ eval tasks on two configurations with an error analysis, and a security note (trifecta, one attack, one defence), using synthetic or public data only. Starter kit: <a href="https://github.com/SDAIAAcademy/agentic-ai/tree/main/labs/capstone">labs/capstone/</a>.</p>
     </div>
     <div>
       <h2>Rubric</h2>
-      <div class="bar"><span>Working system and live demo<i style="--w:100%"></i></span><b>25%</b></div>
+      <div class="bar"><span>Working system (code + saved run evidence)<i style="--w:100%"></i></span><b>25%</b></div>
       <div class="bar"><span>Context and harness engineering decisions<i style="--w:100%;--c:var(--cyan)"></i></span><b>25%</b></div>
       <div class="bar"><span>Evaluation and error analysis<i style="--w:80%;--c:var(--coral)"></i></span><b>20%</b></div>
       <div class="bar"><span>Security, governance and operability<i style="--w:80%;--c:var(--purple)"></i></span><b>20%</b></div>
-      <div class="bar"><span>Presentation and reproducibility<i style="--w:40%;--c:var(--amber)"></i></span><b>10%</b></div>
+      <div class="bar"><span>Presentation and reproducibility (README.md)<i style="--w:40%;--c:var(--amber)"></i></span><b>10%</b></div>
+      <p class="small">Evaluation and presentation are judged from the README and the files it points to.</p>
     </div>
   </div>
 

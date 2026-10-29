@@ -1,7 +1,8 @@
 # Capstone · Agentic AI Systems Engineering
 
-Day 5 is yours: you present a working agent system that you designed, built, measured and secured. Pick a track on
-Day 4, build it that evening, polish it in Day 5's first session, and present.
+The capstone is an individual project: you build a working agent system that you designed, measured and secured, and
+submit it as a public GitHub repository before the Day 5 deadline. There is no live demo and no presentation: your
+`README.md` is the presentation. Pick a track on Day 4, build it that evening, and polish and submit on Day 5.
 
 ## Tracks
 
@@ -12,6 +13,16 @@ Day 4, build it that evening, polish it in Day 5's first session, and present.
 | **3 · Graph workflow** | a durable, human-in-the-loop process (procurement review, complaint handling, …) as a LangGraph graph with agents inside nodes | care most about reliability and control |
 
 Use synthetic or public data only. No personal data from your entity, no internal documents you aren't allowed to share.
+
+## Rules
+
+1. **Individual work.** Each learner submits their own project. No pairs or groups.
+2. **Submission is a public GitHub repository** before the Day 5 deadline. No zips, no Drive folders, no private repositories.
+3. **AI coding assistants are allowed** for writing the code. You are responsible for every design decision, number and
+   claim in the repository, and anything the README claims must be backed by code or saved outputs.
+4. **No live demo and no presentation.** The README is the presentation (see below).
+5. **Show evidence of real runs** instead of a demo: the eval CSVs for both configurations, plus logs or traces, a
+   transcript, screenshots or a short screen recording.
 
 ## Minimum requirements
 
@@ -26,11 +37,18 @@ Use synthetic or public data only. No personal data from your entity, no interna
 
 | Criterion | Weight |
 |---|---|
-| Working system and live demo | 25% |
+| Working system (code + saved run evidence) | 25% |
 | Context and harness engineering decisions | 25% |
 | Evaluation and error analysis | 20% |
 | Security, governance and operability | 20% |
-| Presentation and reproducibility | 10% |
+| Presentation and reproducibility (README.md) | 10% |
+
+The evaluation and the presentation are judged from the README and the files it points to. The README must include the
+course name and link exactly as below; a README without it loses part of the presentation mark.
+
+```markdown
+[Advanced Agentic AI Systems Engineering - SDAIA Academy](https://github.com/sdaiaacademy/agentic-ai/)
+```
 
 ## Getting started
 
@@ -69,21 +87,30 @@ response cache makes re-runs of unchanged requests free.
 |---|---|
 | Day 4, end of Session 4 | pick a track; write the one-paragraph pitch and three example tasks |
 | Day 4, evening | copy `TEMPLATE_README.md` to your project as `README.md`; fill in the problem, tools and trifecta; write 15 tasks; build; run the eval on configuration A; analyse failures; change one thing (B); re-run; try one attack |
-| Day 5, Session 1 | final prep: re-run both evals, rehearse, record a demo backup, clean-clone test |
-| Day 5, Sessions 2–4 | 8 minutes talk + live demo, 4 minutes Q&A, peer feedback |
+| Day 5, Sessions 1–4 | polish and submit: re-run both evals, save the run evidence, re-run the attack against the defended version, clean-clone test, finish the README, push the public repository before the deadline |
 
-## Presentation (8 minutes)
+## The README is the presentation
 
-1. The problem and the user (1 min).
-2. Live demo of one multi-step task, including an approval (2 min).
-3. Your design across the ladder: prompt, context, harness, loop, graph. Which rungs did you need and why? (2 min)
-4. Eval results for A vs. B, and the biggest failure category (2 min).
-5. Your trifecta, the attack and the defence (1 min).
+It must explain, for a reader who has never seen your project:
 
-**Have a fallback**: record a short screen capture of the demo in case the free model is rate-limited on stage.
+1. The problem and the user.
+2. Your design across the ladder: prompt, context, harness, loop, graph. Which rungs did you need and why?
+3. Eval results for A vs. B, and the error analysis: the biggest failure category and what flipped.
+4. The security note: your trifecta, the attack and the defence.
+
+## Evidence of real runs
+
+Commit proof that the system ran, not a promise that it does:
+
+- the eval CSVs for **both** configurations;
+- logs or traces (the audit log, OpenTelemetry output), a transcript of a multi-step task including an approval,
+  screenshots, or a short screen recording.
+
+Every number in the README must be reproducible from, or visible in, these files.
 
 ## Submission
 
-A public or shared repository (or a zip) with: your `README.md` from the template, the code, `tasks.jsonl`, the eval
-CSVs for both configurations, and your slides. Everything must run with `uv run` (PEP 723) or `uv sync`, and an
-OpenRouter key.
+A **public GitHub repository** (no zips, no Drive folders, no private repositories), submitted before the Day 5
+deadline, with: your `README.md` from the template (including the course link above), the code, `tasks.jsonl`, the
+eval CSVs for both configurations, and your run evidence. Everything must run with `uv run` (PEP 723) or `uv sync`,
+and an OpenRouter key. No keys in the repository.
